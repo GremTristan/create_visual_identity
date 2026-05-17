@@ -157,10 +157,26 @@ const STEPS = [
 ];
 
 const C = {
-  bg: "#0e0e0f", bg2: "#161618", bg3: "#1e1e21",
-  bdr: "rgba(255,255,255,0.08)", bdr2: "rgba(255,255,255,0.14)",
-  txt: "#f0ede8", mut: "#8a8784", hint: "#555",
-  blue: "#4f7fff", green: "#2ee8a0", amber: "#f5a623",
+  bg: "#F0F2F7",
+  white: "#FFFFFF",
+  primary: "#5467F4",
+  primaryDark: "#4355E3",
+  primaryLight: "#EEEFFE",
+  primaryBorder: "rgba(84,103,244,0.2)",
+  green: "#1AC97A",
+  greenDark: "#15A864",
+  greenLight: "#E6FAF2",
+  greenBorder: "rgba(26,201,122,0.25)",
+  amber: "#F5A623",
+  amberLight: "#FEF6E8",
+  amberBorder: "rgba(245,166,35,0.25)",
+  text: "#1A1B2E",
+  sub: "#4E4F78",
+  muted: "#8A8CAC",
+  light: "#B8BAD0",
+  border: "#E2E4F0",
+  shadowSm: "0 1px 4px rgba(0,0,0,0.05)",
+  shadow: "0 2px 12px rgba(0,0,0,0.07)",
 };
 
 async function callTutor(messages, system) {
@@ -193,11 +209,37 @@ Mode : ${mode === "casestudy" ? `Étude de cas "${brand}"` : "Création de marqu
 Phase : ${phase === "intro" ? "Première impression (ouverture)" : "Dernière impression (réflexion après contenu)"}`;
 }
 
-const btn = {
-  fontFamily: "system-ui,sans-serif", cursor: "pointer",
-  borderRadius: 12, fontSize: 14, fontWeight: 500,
-  padding: "13px", width: "100%", transition: "opacity .15s",
-};
+const ICON_LAYERS = (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 2 7 12 12 22 7 12 2" />
+    <polyline points="2 17 12 22 22 17" />
+    <polyline points="2 12 12 17 22 12" />
+  </svg>
+);
+
+const ICON_SEND = (color = "#fff") => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m22 2-7 20-4-9-9-4 20-7z" /><path d="M22 2 11 13" />
+  </svg>
+);
+
+const ICON_CHECK = (color = "#fff", size = 12) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="3" strokeLinecap="round">
+    <path d="M20 6 9 17l-5-5" />
+  </svg>
+);
+
+const ICON_ARROW = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+    <path d="m9 18 6-6-6-6" />
+  </svg>
+);
+
+const ICON_BACK = (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+    <path d="m15 18-6-6 6-6" />
+  </svg>
+);
 
 export default function CourseApp() {
   const [mode, setMode] = useState(null);
@@ -215,9 +257,13 @@ export default function CourseApp() {
   const [copied, setCopied] = useState(false);
   const [finished, setFinished] = useState(false);
   const endRef = useRef(null);
-  const taRef = useRef(null);
 
   const s = STEPS[step];
+  const isIntro = phase === "intro";
+  const phaseColor = isIntro ? C.primary : C.green;
+  const isDone = isIntro ? openDone : closeDone;
+  const prompt = mode === "casestudy" ? s.p_cs(brand) : s.p_cr;
+  const dels = mode === "casestudy" ? s.d_cs : s.d_cr;
 
   const currentQ = () => {
     if (phase === "intro") return mode === "casestudy" ? s.iQ_cs(brand) : s.iQ_cr;
@@ -262,222 +308,528 @@ export default function CourseApp() {
   };
 
   const copy = () => {
-    const p = mode === "casestudy" ? s.p_cs(brand) : s.p_cr;
-    navigator.clipboard?.writeText(p).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+    navigator.clipboard?.writeText(prompt).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
+  // ─── Shared styles ────────────────────────────────────────
+  const card = {
+    background: C.white,
+    border: `1px solid ${C.border}`,
+    borderRadius: 16,
+    boxShadow: C.shadowSm,
+    padding: "20px 24px",
+    marginBottom: 14,
+  };
+
+  const btnBase = {
+    fontFamily: "system-ui,sans-serif",
+    cursor: "pointer",
+    borderRadius: 12,
+    fontSize: 14,
+    fontWeight: 600,
+    padding: "12px 22px",
+    border: "none",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    transition: "opacity .15s",
+  };
+
+  const btnPrimary = { ...btnBase, background: C.primary, color: "#fff" };
+  const btnGreen   = { ...btnBase, background: C.green, color: "#fff" };
+  const btnGhost   = { ...btnBase, background: C.primaryLight, color: C.primary, border: `1px solid ${C.primaryBorder}` };
+
+  // ─── MODE SELECTION ───────────────────────────────────────
   if (!mode) return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui,sans-serif" }}>
-      <div style={{ maxWidth: 460, width: "100%" }}>
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: C.hint, marginBottom: 10 }}>Cours IA · Identité visuelle</div>
-          <div style={{ fontSize: 24, fontWeight: 600, color: C.txt, marginBottom: 10 }}>Comment veux-tu utiliser ce cours ?</div>
-          <div style={{ fontSize: 13, color: C.mut, lineHeight: 1.7 }}>Le tuteur IA t'accompagne à chaque étape — il pose des questions, réagit à tes réponses, et te pousse à réfléchir.</div>
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 20px", fontFamily: "system-ui,sans-serif" }}>
+
+      {/* Logo */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 40 }}>
+        <div style={{ width: 38, height: 38, borderRadius: 11, background: C.primary, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          {ICON_LAYERS}
         </div>
+        <span style={{ fontSize: 18, fontWeight: 800, color: C.text, letterSpacing: "-0.02em" }}>Brand Studio</span>
+      </div>
+
+      {/* Headline */}
+      <div style={{ textAlign: "center", marginBottom: 40, maxWidth: 420 }}>
+        <h1 style={{ fontSize: 30, fontWeight: 800, color: C.text, margin: "0 0 12px", letterSpacing: "-0.03em", lineHeight: 1.2 }}>
+          Construis une identité<br />visuelle professionnelle
+        </h1>
+        <p style={{ fontSize: 15, color: C.muted, margin: 0, lineHeight: 1.65 }}>
+          8 étapes structurées · Exemples de vraies marques · Prompts IA prêts à l'emploi
+        </p>
+      </div>
+
+      {/* Mode cards */}
+      <div style={{ width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: 12 }}>
         {[
-          { id: "create", icon: "✦", title: "Créer ma marque", desc: "Je pars de zéro et je construis une identité visuelle de A à Z avec l'IA comme mentor.", accent: C.blue },
-          { id: "setup", icon: "🔍", title: "Étude de cas", desc: "J'analyse une marque existante avec la même trame pour comprendre ses choix créatifs.", accent: C.green },
+          {
+            id: "create",
+            iconBg: C.primaryLight,
+            iconColor: C.primary,
+            iconPath: "M12 5v14M5 12h14",
+            title: "Créer ma marque",
+            desc: "Construis une identité visuelle de A à Z avec un guide à chaque étape.",
+            badge: "Création", badgeColor: C.primary, badgeBg: C.primaryLight,
+          },
+          {
+            id: "setup",
+            iconBg: C.greenLight,
+            iconColor: C.green,
+            iconPath: "m21 21-4.35-4.35M11 11m-8 0a8 8 0 1 0 16 0 8 8 0 0 0-16 0",
+            title: "Étude de cas",
+            desc: "Analyse une marque existante avec la même trame pour décoder ses choix créatifs.",
+            badge: "Analyse", badgeColor: C.greenDark, badgeBg: C.greenLight,
+          },
         ].map((opt) => (
-          <div key={opt.id} onClick={() => setMode(opt.id)}
-            style={{ background: C.bg2, border: `0.5px solid ${C.bdr}`, borderRadius: 16, padding: "20px 24px", cursor: "pointer", marginBottom: 12, transition: "border-color .2s" }}
-            onMouseEnter={(e) => (e.currentTarget.style.borderColor = opt.accent + "66")}
-            onMouseLeave={(e) => (e.currentTarget.style.borderColor = C.bdr)}>
-            <div style={{ fontSize: 20, marginBottom: 8 }}>{opt.icon}</div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: C.txt, marginBottom: 4 }}>{opt.title}</div>
-            <div style={{ fontSize: 13, color: C.mut, lineHeight: 1.5 }}>{opt.desc}</div>
+          <div
+            key={opt.id}
+            onClick={() => setMode(opt.id)}
+            style={{ ...card, marginBottom: 0, cursor: "pointer", padding: "18px 20px", display: "flex", alignItems: "flex-start", gap: 16 }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.primaryBorder; e.currentTarget.style.boxShadow = C.shadow; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.boxShadow = C.shadowSm; }}
+          >
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: opt.iconBg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={opt.iconColor} strokeWidth="2" strokeLinecap="round">
+                <path d={opt.iconPath} />
+              </svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
+                <span style={{ fontSize: 15, fontWeight: 700, color: C.text }}>{opt.title}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: opt.badgeColor, background: opt.badgeBg, borderRadius: 6, padding: "2px 8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>{opt.badge}</span>
+              </div>
+              <p style={{ margin: 0, fontSize: 13, color: C.muted, lineHeight: 1.55 }}>{opt.desc}</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.light} strokeWidth="2" style={{ flexShrink: 0, marginTop: 4 }}>
+              <path d="m9 18 6-6-6-6" />
+            </svg>
           </div>
+        ))}
+      </div>
+
+      {/* Stats */}
+      <div style={{ display: "flex", gap: 20, marginTop: 36, flexWrap: "wrap", justifyContent: "center" }}>
+        {["8 étapes guidées", "40 exemples de marques", "8 prompts IA"].map((t) => (
+          <span key={t} style={{ fontSize: 12, color: C.light, display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ width: 3, height: 3, borderRadius: "50%", background: C.light, display: "inline-block" }} />
+            {t}
+          </span>
         ))}
       </div>
     </div>
   );
 
+  // ─── BRAND INPUT ──────────────────────────────────────────
   if (mode === "setup") return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui,sans-serif" }}>
-      <div style={{ maxWidth: 420, width: "100%" }}>
-        <button onClick={() => setMode(null)} style={{ background: "none", border: "none", color: C.hint, cursor: "pointer", fontSize: 13, marginBottom: 24, padding: 0, fontFamily: "system-ui,sans-serif" }}>← Retour</button>
-        <div style={{ fontSize: 20, fontWeight: 600, color: C.txt, marginBottom: 8 }}>Quelle marque veux-tu analyser ?</div>
-        <div style={{ fontSize: 13, color: C.mut, marginBottom: 24, lineHeight: 1.7 }}>Choisis une marque que tu trouves intéressante — locale, nationale ou mondiale.</div>
-        <input value={brandInput} onChange={(e) => setBrandInput(e.target.value)} placeholder="ex: Apple, Patagonia, Jacquemus..."
-          onKeyDown={(e) => { if (e.key === "Enter" && brandInput.trim()) { setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro"); } }}
-          style={{ width: "100%", background: C.bg2, border: `0.5px solid ${C.bdr2}`, borderRadius: 12, padding: "14px 16px", color: C.txt, fontSize: 15, outline: "none", fontFamily: "system-ui,sans-serif", marginBottom: 12, boxSizing: "border-box" }} />
-        <button onClick={() => { if (brandInput.trim()) { setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro"); } }}
-          style={{ ...btn, background: "rgba(46,232,160,0.12)", border: `0.5px solid rgba(46,232,160,0.3)`, color: C.green }}>
-          Analyser {brandInput || "cette marque"} →
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 20px", fontFamily: "system-ui,sans-serif" }}>
+      <div style={{ width: "100%", maxWidth: 420 }}>
+        <button
+          onClick={() => setMode(null)}
+          style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 13, fontWeight: 600, marginBottom: 36, padding: 0, fontFamily: "system-ui,sans-serif", display: "flex", alignItems: "center", gap: 6 }}
+        >
+          {ICON_BACK} Retour
         </button>
+
+        <h2 style={{ fontSize: 24, fontWeight: 800, color: C.text, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Quelle marque analyser ?</h2>
+        <p style={{ margin: "0 0 28px", fontSize: 14, color: C.muted, lineHeight: 1.65 }}>
+          Choisis une marque que tu trouves intéressante — locale, nationale ou mondiale.
+        </p>
+
+        <input
+          value={brandInput}
+          onChange={(e) => setBrandInput(e.target.value)}
+          placeholder="ex: Apple, Patagonia, Jacquemus..."
+          autoFocus
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && brandInput.trim()) {
+              setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro");
+            }
+          }}
+          style={{ width: "100%", background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 12, padding: "14px 16px", color: C.text, fontSize: 15, outline: "none", fontFamily: "system-ui,sans-serif", marginBottom: 10, boxSizing: "border-box" }}
+          onFocus={(e) => (e.target.style.borderColor = C.primary)}
+          onBlur={(e) => (e.target.style.borderColor = C.border)}
+        />
+
+        <button
+          onClick={() => { if (brandInput.trim()) { setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro"); } }}
+          style={{ ...btnGreen, width: "100%", justifyContent: "center" }}
+        >
+          Analyser {brandInput || "cette marque"} {ICON_ARROW}
+        </button>
+
+        <div style={{ marginTop: 24 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Suggestions</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {["Apple", "Nike", "Airbnb", "Patagonia", "Spotify", "Glossier"].map((b) => (
+              <button
+                key={b}
+                onClick={() => setBrandInput(b)}
+                style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 8, padding: "6px 14px", fontSize: 13, color: C.sub, cursor: "pointer", fontFamily: "system-ui,sans-serif", fontWeight: 500 }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = C.primaryBorder)}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = C.border)}
+              >
+                {b}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 
+  // ─── FINISHED ─────────────────────────────────────────────
   if (finished) return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui,sans-serif" }}>
-      <div style={{ maxWidth: 400, width: "100%", textAlign: "center" }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
-        <div style={{ fontSize: 22, fontWeight: 600, color: C.txt, marginBottom: 12 }}>
-          {mode === "casestudy" ? `${brand} décortiquée` : "Identité visuelle complète"}
-        </div>
-        <div style={{ fontSize: 14, color: C.mut, lineHeight: 1.7, marginBottom: 24 }}>
-          Tu as traversé les 8 étapes. Maintenant tu vois les marques différemment — tu vois les décisions derrière chaque choix visuel.
-        </div>
-        <button onClick={() => { setMode(null); setStep(0); setPhase("intro"); setDone(new Set()); setFinished(false); }}
-          style={{ ...btn, background: C.bg2, border: `0.5px solid ${C.bdr2}`, color: C.txt, width: "auto", padding: "11px 24px" }}>
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 20px", fontFamily: "system-ui,sans-serif", textAlign: "center" }}>
+      <div style={{ width: 72, height: 72, borderRadius: "50%", background: C.greenLight, border: `2px solid ${C.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
+        {ICON_CHECK(C.green, 28)}
+      </div>
+      <h2 style={{ fontSize: 26, fontWeight: 800, color: C.text, margin: "0 0 12px", letterSpacing: "-0.02em" }}>
+        {mode === "casestudy" ? `${brand} décortiquée` : "Identité visuelle complète"}
+      </h2>
+      <p style={{ fontSize: 15, color: C.muted, margin: "0 0 36px", maxWidth: 340, lineHeight: 1.65 }}>
+        Tu as traversé les 8 étapes. Tu vois maintenant les décisions derrière chaque choix visuel.
+      </p>
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+        <button
+          onClick={() => { setMode(null); setStep(0); setPhase("intro"); setDone(new Set()); setFinished(false); setBrand(""); setBrandInput(""); }}
+          style={btnPrimary}
+        >
           Recommencer
         </button>
+        <button
+          onClick={() => { setStep(0); setPhase("intro"); setDone(new Set()); setFinished(false); }}
+          style={btnGhost}
+        >
+          Revoir depuis le début
+        </button>
       </div>
     </div>
   );
 
-  const prompt = mode === "casestudy" ? s.p_cs(brand) : s.p_cr;
-  const dels = mode === "casestudy" ? s.d_cs : s.d_cr;
-  const question = currentQ();
-  const isIntro = phase === "intro";
-  const isDone = isIntro ? openDone : closeDone;
-  const phaseColor = isIntro ? C.blue : C.green;
+  // ─── MAIN COURSE ──────────────────────────────────────────
+  const progress = (done.size / STEPS.length) * 100;
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "system-ui,sans-serif", display: "flex", flexDirection: "column" }}>
-      {/* Header */}
-      <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(14,14,15,0.96)", backdropFilter: "blur(20px)", borderBottom: `0.5px solid ${C.bdr}`, padding: "12px 20px", display: "flex", alignItems: "center", gap: 12 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 11, color: C.hint, letterSpacing: "0.07em", textTransform: "uppercase", marginBottom: 2 }}>
-            {mode === "casestudy" ? `📍 ${brand}` : "✦ Création"} · Étape {step + 1}/8
+
+      {/* ── HEADER ── */}
+      <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(255,255,255,0.96)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.border}` }}>
+        <div style={{ maxWidth: 740, margin: "0 auto", padding: "0 20px", display: "flex", alignItems: "center", gap: 12, height: 58 }}>
+
+          {/* Logo */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: C.primary, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              {ICON_LAYERS}
+            </div>
+            <span style={{ fontSize: 13, fontWeight: 800, color: C.text, letterSpacing: "-0.01em" }}>Brand Studio</span>
           </div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: C.txt, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</div>
+
+          {/* Stepper */}
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            {STEPS.map((st, i) => {
+              const isComp = done.has(i);
+              const isCurr = i === step;
+              return (
+                <div key={i} style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    onClick={() => { setStep(i); setPhase("intro"); }}
+                    title={st.name}
+                    style={{
+                      width: 28, height: 28, borderRadius: "50%",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      background: isComp ? C.green : isCurr ? C.primary : C.white,
+                      border: `2px solid ${isComp ? C.green : isCurr ? C.primary : C.border}`,
+                      color: isComp || isCurr ? "#fff" : C.light,
+                      fontSize: 11, fontWeight: 700, cursor: "pointer",
+                      flexShrink: 0, transition: "all .2s",
+                    }}
+                  >
+                    {isComp ? ICON_CHECK("#fff", 10) : i + 1}
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div style={{ width: 14, height: 2, background: done.has(i) ? C.green : C.border, flexShrink: 0 }} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Mode badge */}
+          <div style={{
+            flexShrink: 0, fontSize: 11, fontWeight: 700,
+            color: mode === "casestudy" ? C.greenDark : C.primary,
+            background: mode === "casestudy" ? C.greenLight : C.primaryLight,
+            borderRadius: 8, padding: "4px 10px", letterSpacing: "0.01em",
+          }}>
+            {mode === "casestudy" ? brand : "Création"}
+          </div>
         </div>
-        <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
-          {STEPS.map((_, i) => (
-            <div key={i} onClick={() => { setStep(i); setPhase("intro"); }}
-              style={{ width: 8, height: 8, borderRadius: "50%", cursor: "pointer", transition: "background .2s", background: done.has(i) ? C.green : i === step ? C.blue : C.bg3 }} />
-          ))}
+
+        {/* Progress bar */}
+        <div style={{ height: 3, background: C.border }}>
+          <div style={{ height: "100%", width: `${progress}%`, background: C.green, transition: "width .5s ease" }} />
         </div>
       </div>
 
-      {/* Phase tabs */}
-      <div style={{ display: "flex", borderBottom: `0.5px solid ${C.bdr}` }}>
-        {["intro", "content", "outro"].map((p, i) => (
-          <div key={p} onClick={() => { setPhase(p); setMsgs([]); setOpenDone(false); setCloseDone(false); }}
-            style={{ flex: 1, padding: "10px 0", textAlign: "center", fontSize: 11, fontWeight: 500, letterSpacing: "0.05em", textTransform: "uppercase", color: phase === p ? C.txt : C.hint, borderBottom: `2px solid ${phase === p ? (p === "outro" ? C.green : C.blue) : "transparent"}`, cursor: "pointer", transition: "all .2s" }}>
-            {["1ère impression", "Contenu", "Dernière impression"][i]}
+      {/* ── BODY ── */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "28px 20px 130px", maxWidth: 740, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+
+        {/* Step title */}
+        <div style={{ marginBottom: 22 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: C.amber, background: C.amberLight, borderRadius: 6, padding: "3px 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+              {s.tag}
+            </span>
+            <span style={{ fontSize: 12, color: C.muted, fontWeight: 500 }}>Étape {step + 1} / {STEPS.length}</span>
           </div>
-        ))}
-      </div>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: C.text, margin: 0, letterSpacing: "-0.025em" }}>{s.name}</h2>
+        </div>
 
-      {/* Body */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 140px", maxWidth: 760, margin: "0 auto", width: "100%" }}>
-
-        {/* Q&A phases */}
+        {/* ── Q&A PHASES ── */}
         {(phase === "intro" || phase === "outro") && (
           <>
-            <div style={{ background: C.bg2, border: `0.5px solid ${C.bdr}`, borderLeft: `2px solid ${phaseColor}`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
-              <div style={{ fontSize: 10, color: phaseColor, marginBottom: 8, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                {isIntro ? "Mentor IA · Première impression" : "Mentor IA · Dernière impression"}
+            {/* Question card */}
+            <div style={{ ...card, borderLeft: `3px solid ${phaseColor}` }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: phaseColor, textTransform: "uppercase", letterSpacing: "0.09em", marginBottom: 10 }}>
+                {isIntro ? "Avant de commencer" : "Pour aller plus loin"}
               </div>
-              <div style={{ fontSize: 14, color: C.txt, lineHeight: 1.75 }}>{question}</div>
+              <p style={{ fontSize: 15, color: C.text, margin: 0, lineHeight: 1.75, fontWeight: 500 }}>{currentQ()}</p>
             </div>
 
+            {/* Messages */}
             {msgs.map((m, i) => (
-              <div key={i} style={{ marginBottom: 10, display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
-                <div style={{ maxWidth: "85%", background: m.role === "user" ? "#1b1b32" : C.bg2, border: `0.5px solid ${m.role === "user" ? "rgba(79,127,255,.25)" : C.bdr}`, borderRadius: 12, padding: "11px 14px" }}>
-                  {m.role === "assistant" && <div style={{ fontSize: 10, color: phaseColor, marginBottom: 5, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>Mentor</div>}
-                  <div style={{ fontSize: 14, color: C.txt, lineHeight: 1.65 }}>{m.content}</div>
+              <div key={i} style={{ marginBottom: 10, display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start", alignItems: "flex-end", gap: 8 }}>
+                {m.role === "assistant" && (
+                  <div style={{ width: 26, height: 26, borderRadius: "50%", background: phaseColor, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                  </div>
+                )}
+                <div style={{
+                  maxWidth: "78%",
+                  background: m.role === "user" ? C.primary : C.white,
+                  border: `1px solid ${m.role === "user" ? "transparent" : C.border}`,
+                  borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+                  padding: "12px 16px",
+                  boxShadow: C.shadowSm,
+                }}>
+                  <p style={{ fontSize: 14, color: m.role === "user" ? "#fff" : C.text, margin: 0, lineHeight: 1.65 }}>{m.content}</p>
                 </div>
               </div>
             ))}
 
+            {/* Loading */}
             {loading && (
-              <div style={{ display: "flex", gap: 4, padding: "9px 14px", background: C.bg2, borderRadius: 12, width: "fit-content", marginBottom: 10 }}>
-                {[0, 1, 2].map((i) => (
-                  <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: phaseColor, animation: `dot 1s ${i * 0.18}s infinite` }} />
-                ))}
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginBottom: 10 }}>
+                <div style={{ width: 26, height: 26, borderRadius: "50%", background: phaseColor, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                </div>
+                <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: "16px 16px 16px 4px", padding: "14px 18px", display: "flex", gap: 5, boxShadow: C.shadowSm }}>
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: phaseColor, animation: `blink 1.2s ${i * 0.2}s infinite` }} />
+                  ))}
+                </div>
               </div>
             )}
             <div ref={endRef} />
 
-            {isDone && (
-              <button onClick={isIntro ? () => setPhase("content") : nextStep}
-                style={{ ...btn, background: "rgba(79,127,255,0.1)", border: `0.5px solid rgba(79,127,255,.3)`, color: C.blue, marginTop: 10 }}>
-                {isIntro ? "Voir le contenu →" : step < STEPS.length - 1 ? `Étape ${step + 2} : ${STEPS[step + 1].name} →` : "🎉 Terminer le cours"}
+            {/* Continue button */}
+            {isDone && !loading && (
+              <button
+                onClick={isIntro ? () => setPhase("content") : nextStep}
+                style={{ ...btnPrimary, marginTop: 8 }}
+              >
+                {isIntro
+                  ? "Voir le cours"
+                  : step < STEPS.length - 1
+                    ? `Étape suivante : ${STEPS[step + 1].name}`
+                    : "Terminer le cours"}
+                {ICON_ARROW}
               </button>
             )}
           </>
         )}
 
-        {/* Content phase */}
+        {/* ── CONTENT PHASE ── */}
         {phase === "content" && (
           <>
-            <div style={{ background: C.bg2, border: `0.5px solid ${C.bdr}`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: 99, background: "rgba(245,166,35,0.12)", border: `0.5px solid rgba(245,166,35,.3)`, color: C.amber, fontSize: 11, fontWeight: 500 }}>{s.tag}</span>
-                <span style={{ fontSize: 12, color: C.hint }}>Étape {step + 1}</span>
-              </div>
-              <div style={{ fontSize: 14, color: C.txt, lineHeight: 1.75 }}>{s.intro}</div>
+            {/* Intro text */}
+            <div style={card}>
+              <p style={{ fontSize: 15, color: C.text, margin: 0, lineHeight: 1.8 }}>{s.intro}</p>
             </div>
 
-            <button onClick={() => setShowEx(!showEx)}
-              style={{ width: "100%", background: showEx ? "rgba(245,166,35,0.08)" : C.bg2, border: `0.5px solid ${showEx ? "rgba(245,166,35,.3)" : C.bdr}`, borderRadius: 12, padding: "13px 16px", color: showEx ? C.amber : C.mut, fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "system-ui,sans-serif", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, transition: "all .2s" }}>
-              <span>📚 {showEx ? "Masquer" : "Voir"} les 5 exemples de marques réelles</span>
-              <span style={{ fontSize: 12 }}>{showEx ? "↑" : "↓"}</span>
-            </button>
-
-            {showEx && s.ex.map((ex, i) => (
-              <div key={i} style={{ background: C.bg2, border: `0.5px solid ${C.bdr}`, borderRadius: 12, padding: "14px 16px", marginBottom: 8 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                  <span style={{ fontSize: 18 }}>{ex.e}</span>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: C.txt }}>{ex.n}</span>
+            {/* Examples accordion */}
+            <div style={{ marginBottom: 14 }}>
+              <button
+                onClick={() => setShowEx(!showEx)}
+                style={{
+                  width: "100%", background: C.white, border: `1px solid ${showEx ? C.amberBorder : C.border}`,
+                  borderRadius: 16, padding: "14px 18px", cursor: "pointer",
+                  fontFamily: "system-ui,sans-serif", display: "flex", alignItems: "center",
+                  justifyContent: "space-between", boxShadow: C.shadowSm, marginBottom: showEx ? 8 : 0,
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = C.amberBorder)}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = showEx ? C.amberBorder : C.border)}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: 10, background: C.amberLight, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2" strokeLinecap="round">
+                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                    </svg>
+                  </div>
+                  <div style={{ textAlign: "left" }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>5 exemples de marques réelles</div>
+                    <div style={{ fontSize: 12, color: C.muted }}>Études de cas illustrées</div>
+                  </div>
                 </div>
-                <div style={{ fontSize: 13, color: C.mut, lineHeight: 1.7 }}>{ex.d}</div>
-              </div>
-            ))}
-
-            <div style={{ marginTop: 18 }}>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.hint, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.09em" }}>Prompt à utiliser</div>
-              <div style={{ background: "#0a0a0d", border: `0.5px solid ${C.bdr}`, borderLeft: `2px solid ${C.blue}`, borderRadius: 10, padding: "12px 14px", fontFamily: "monospace", fontSize: 12, color: "#bbb8b2", lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word", marginBottom: 8 }}>
-                {prompt}
-              </div>
-              <button onClick={copy} style={{ ...btn, background: C.bg2, border: `0.5px solid ${copied ? "rgba(46,232,160,.4)" : C.bdr2}`, color: copied ? C.green : C.mut, padding: "9px" }}>
-                {copied ? "✓ Copié" : "Copier le prompt"}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.muted} strokeWidth="2" style={{ transform: showEx ? "rotate(180deg)" : "none", transition: "transform .2s", flexShrink: 0 }}>
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
               </button>
-            </div>
 
-            <div style={{ marginTop: 18 }}>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.hint, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.09em" }}>Livrables de l'étape</div>
-              {dels.map((d, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
-                  <div style={{ width: 5, height: 5, borderRadius: "50%", background: C.green, flexShrink: 0, marginTop: 7 }} />
-                  <div style={{ fontSize: 13, color: C.mut, lineHeight: 1.5 }}>{d}</div>
+              {showEx && s.ex.map((ex, i) => (
+                <div key={i} style={{ ...card, marginBottom: 8, padding: "16px 18px" }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 20 }}>
+                      {ex.e}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 5 }}>{ex.n}</div>
+                      <p style={{ fontSize: 13, color: C.sub, lineHeight: 1.7, margin: 0 }}>{ex.d}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
 
-            <button onClick={() => setPhase("outro")} style={{ ...btn, background: "rgba(46,232,160,0.1)", border: `0.5px solid rgba(46,232,160,.3)`, color: C.green, marginTop: 20 }}>
-              Réflexion finale →
+            {/* Prompt */}
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: C.muted, marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.09em" }}>Prompt à utiliser</div>
+              <div style={{
+                background: "#12132A",
+                border: `1px solid rgba(255,255,255,0.06)`,
+                borderLeft: `3px solid ${C.primary}`,
+                borderRadius: 12,
+                padding: "14px 18px",
+                fontFamily: "'SF Mono', 'Fira Code', 'Consolas', monospace",
+                fontSize: 12.5,
+                color: "#C0C4FF",
+                lineHeight: 1.75,
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                marginBottom: 8,
+              }}>
+                {prompt}
+              </div>
+              <button
+                onClick={copy}
+                style={{
+                  ...btnBase,
+                  background: copied ? C.greenLight : C.primaryLight,
+                  color: copied ? C.greenDark : C.primary,
+                  border: `1px solid ${copied ? C.greenBorder : C.primaryBorder}`,
+                  padding: "10px 18px",
+                  fontSize: 13,
+                }}
+              >
+                {copied ? (
+                  <>{ICON_CHECK(C.greenDark, 13)} Copié !</>
+                ) : (
+                  <>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                    </svg>
+                    Copier le prompt
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Deliverables */}
+            <div style={{ ...card, padding: "16px 20px", marginBottom: 20 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: C.muted, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.09em" }}>Livrables de l'étape</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {dels.map((d, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{ width: 20, height: 20, borderRadius: "50%", background: C.greenLight, border: `1.5px solid ${C.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      {ICON_CHECK(C.greenDark, 9)}
+                    </div>
+                    <span style={{ fontSize: 14, color: C.sub }}>{d}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button onClick={() => setPhase("outro")} style={btnGreen}>
+              Réflexion finale {ICON_ARROW}
             </button>
           </>
         )}
       </div>
 
-      {/* Input bar */}
+      {/* ── INPUT BAR ── */}
       {(phase === "intro" || phase === "outro") && (
-        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(14,14,15,0.97)", backdropFilter: "blur(20px)", borderTop: `0.5px solid ${C.bdr}`, padding: "12px 20px 20px" }}>
-          <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", gap: 8, alignItems: "flex-end" }}>
-            <textarea ref={taRef} value={input} onChange={(e) => setInput(e.target.value)} rows={1}
-              placeholder={isIntro ? "Ta réponse..." : "Ta réflexion..."}
+        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(255,255,255,0.97)", backdropFilter: "blur(16px)", borderTop: `1px solid ${C.border}`, padding: "12px 20px 20px" }}>
+          <div style={{ maxWidth: 740, margin: "0 auto", display: "flex", gap: 10, alignItems: "flex-end" }}>
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              rows={1}
+              placeholder={isIntro ? "Votre réponse..." : "Votre réflexion..."}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-              style={{ flex: 1, background: C.bg2, border: `0.5px solid ${C.bdr2}`, borderRadius: 12, padding: "10px 14px", color: C.txt, fontSize: 14, outline: "none", resize: "none", fontFamily: "system-ui,sans-serif", lineHeight: 1.5 }} />
-            <button onClick={send} disabled={loading || !input.trim()}
-              style={{ width: 42, height: 42, borderRadius: 10, background: input.trim() ? phaseColor : C.bg3, border: "none", cursor: input.trim() ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background .2s" }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={input.trim() ? "#fff" : "#444"} strokeWidth="2.5">
-                <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
-              </svg>
+              style={{
+                flex: 1,
+                background: C.bg,
+                border: `1.5px solid ${input ? C.primaryBorder : C.border}`,
+                borderRadius: 14,
+                padding: "12px 16px",
+                color: C.text,
+                fontSize: 14,
+                outline: "none",
+                resize: "none",
+                fontFamily: "system-ui,sans-serif",
+                lineHeight: 1.55,
+                transition: "border-color .15s",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = C.primaryBorder)}
+              onBlur={(e) => (e.target.style.borderColor = C.border)}
+            />
+            <button
+              onClick={send}
+              disabled={loading || !input.trim()}
+              style={{
+                width: 44, height: 44, borderRadius: 12,
+                background: input.trim() && !loading ? C.primary : C.border,
+                border: "none", cursor: input.trim() && !loading ? "pointer" : "default",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0, transition: "background .15s",
+              }}
+            >
+              {ICON_SEND(input.trim() ? "#fff" : C.muted)}
             </button>
           </div>
         </div>
       )}
 
       <style>{`
-        @keyframes dot { 0%,100%{opacity:.25;transform:scale(.75)} 50%{opacity:1;transform:scale(1)} }
-        textarea::placeholder { color: #3a3a3e; }
-        input::placeholder { color: #3a3a3e; }
+        @keyframes blink {
+          0%, 100% { opacity: 0.25; transform: scale(0.75); }
+          50% { opacity: 1; transform: scale(1); }
+        }
+        textarea::placeholder { color: ${C.light}; }
+        input::placeholder { color: ${C.light}; }
         * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 3px; }
       `}</style>
     </div>
   );

@@ -1,21 +1,32 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export async function POST(req) {
   try {
     const { messages, system } = await req.json();
 
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system,
-      messages,
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction: system,
     });
 
-    return Response.json({ content: response.content });
+    // Gemini uses "model" instead of "assistant"
+    const history = messages.slice(0, -1).map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    }));
+
+    const lastMessage = messages[messages.length - 1];
+
+    const chat = model.startChat({ history });
+    const result = await chat.sendMessage(lastMessage.content);
+    const text = result.response.text();
+
+    // Keep same response envelope so the frontend doesn't change
+    return Response.json({ content: [{ type: "text", text }] });
   } catch (err) {
-    console.error("Anthropic error:", err);
+    console.error("Gemini error:", err);
     return Response.json({ error: err.message }, { status: 500 });
   }
 }
