@@ -193,11 +193,16 @@ Mode : ${mode === "casestudy" ? `Étude de cas "${brand}"` : "Création de marqu
 Phase : ${phase === "intro" ? "Première impression (ouverture)" : "Dernière impression (réflexion après contenu)"}`;
 }
 
-const btn = {
-  fontFamily: "system-ui,sans-serif", cursor: "pointer",
-  borderRadius: 12, fontSize: 14, fontWeight: 500,
-  padding: "13px", width: "100%", transition: "opacity .15s",
-};
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isMobile;
+}
 
 export default function CourseApp() {
   const [mode, setMode] = useState(null);
@@ -216,6 +221,7 @@ export default function CourseApp() {
   const [finished, setFinished] = useState(false);
   const endRef = useRef(null);
   const taRef = useRef(null);
+  const isMobile = useIsMobile();
 
   const s = STEPS[step];
 
@@ -266,25 +272,35 @@ export default function CourseApp() {
     navigator.clipboard?.writeText(p).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
   };
 
+  const changePhase = (p) => {
+    setPhase(p);
+    setMsgs([]);
+    setOpenDone(false);
+    setCloseDone(false);
+  };
+
+  // ── SCREENS WITHOUT MAIN NAV ───────────────────────────────────────────────
+
   if (!mode) return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui,sans-serif" }}>
-      <div style={{ maxWidth: 460, width: "100%" }}>
+    <div className="screen-center">
+      <div className="onboarding-card">
         <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: C.hint, marginBottom: 10 }}>Cours IA · Identité visuelle</div>
-          <div style={{ fontSize: 24, fontWeight: 600, color: C.txt, marginBottom: 10 }}>Comment veux-tu utiliser ce cours ?</div>
-          <div style={{ fontSize: 13, color: C.mut, lineHeight: 1.7 }}>Le tuteur IA t'accompagne à chaque étape — il pose des questions, réagit à tes réponses, et te pousse à réfléchir.</div>
+          <div className="label-tag" style={{ marginBottom: 10 }}>Cours IA · Identité visuelle</div>
+          <div className="title-lg" style={{ marginBottom: 10 }}>Comment veux-tu utiliser ce cours ?</div>
+          <div className="body-sm" style={{ color: C.mut, lineHeight: 1.7 }}>
+            Le tuteur IA t'accompagne à chaque étape — il pose des questions, réagit à tes réponses, et te pousse à réfléchir.
+          </div>
         </div>
         {[
           { id: "create", icon: "✦", title: "Créer ma marque", desc: "Je pars de zéro et je construis une identité visuelle de A à Z avec l'IA comme mentor.", accent: C.blue },
           { id: "setup", icon: "🔍", title: "Étude de cas", desc: "J'analyse une marque existante avec la même trame pour comprendre ses choix créatifs.", accent: C.green },
         ].map((opt) => (
-          <div key={opt.id} onClick={() => setMode(opt.id)}
-            style={{ background: C.bg2, border: `0.5px solid ${C.bdr}`, borderRadius: 16, padding: "20px 24px", cursor: "pointer", marginBottom: 12, transition: "border-color .2s" }}
+          <div key={opt.id} onClick={() => setMode(opt.id)} className="choice-card"
             onMouseEnter={(e) => (e.currentTarget.style.borderColor = opt.accent + "66")}
             onMouseLeave={(e) => (e.currentTarget.style.borderColor = C.bdr)}>
-            <div style={{ fontSize: 20, marginBottom: 8 }}>{opt.icon}</div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: C.txt, marginBottom: 4 }}>{opt.title}</div>
-            <div style={{ fontSize: 13, color: C.mut, lineHeight: 1.5 }}>{opt.desc}</div>
+            <div style={{ fontSize: 22, marginBottom: 8 }}>{opt.icon}</div>
+            <div className="title-md" style={{ marginBottom: 4 }}>{opt.title}</div>
+            <div className="body-sm" style={{ color: C.mut, lineHeight: 1.5 }}>{opt.desc}</div>
           </div>
         ))}
       </div>
@@ -292,16 +308,19 @@ export default function CourseApp() {
   );
 
   if (mode === "setup") return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui,sans-serif" }}>
-      <div style={{ maxWidth: 420, width: "100%" }}>
-        <button onClick={() => setMode(null)} style={{ background: "none", border: "none", color: C.hint, cursor: "pointer", fontSize: 13, marginBottom: 24, padding: 0, fontFamily: "system-ui,sans-serif" }}>← Retour</button>
-        <div style={{ fontSize: 20, fontWeight: 600, color: C.txt, marginBottom: 8 }}>Quelle marque veux-tu analyser ?</div>
-        <div style={{ fontSize: 13, color: C.mut, marginBottom: 24, lineHeight: 1.7 }}>Choisis une marque que tu trouves intéressante — locale, nationale ou mondiale.</div>
-        <input value={brandInput} onChange={(e) => setBrandInput(e.target.value)} placeholder="ex: Apple, Patagonia, Jacquemus..."
+    <div className="screen-center">
+      <div className="onboarding-card">
+        <button onClick={() => setMode(null)} className="back-btn">← Retour</button>
+        <div className="title-md" style={{ marginBottom: 8 }}>Quelle marque veux-tu analyser ?</div>
+        <div className="body-sm" style={{ color: C.mut, marginBottom: 24, lineHeight: 1.7 }}>
+          Choisis une marque que tu trouves intéressante — locale, nationale ou mondiale.
+        </div>
+        <input value={brandInput} onChange={(e) => setBrandInput(e.target.value)}
+          placeholder="ex: Apple, Patagonia, Jacquemus..."
           onKeyDown={(e) => { if (e.key === "Enter" && brandInput.trim()) { setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro"); } }}
-          style={{ width: "100%", background: C.bg2, border: `0.5px solid ${C.bdr2}`, borderRadius: 12, padding: "14px 16px", color: C.txt, fontSize: 15, outline: "none", fontFamily: "system-ui,sans-serif", marginBottom: 12, boxSizing: "border-box" }} />
+          className="text-input" />
         <button onClick={() => { if (brandInput.trim()) { setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro"); } }}
-          style={{ ...btn, background: "rgba(46,232,160,0.12)", border: `0.5px solid rgba(46,232,160,0.3)`, color: C.green }}>
+          className="btn-primary btn-green" style={{ marginTop: 0 }}>
           Analyser {brandInput || "cette marque"} →
         </button>
       </div>
@@ -309,22 +328,24 @@ export default function CourseApp() {
   );
 
   if (finished) return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui,sans-serif" }}>
-      <div style={{ maxWidth: 400, width: "100%", textAlign: "center" }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
-        <div style={{ fontSize: 22, fontWeight: 600, color: C.txt, marginBottom: 12 }}>
+    <div className="screen-center">
+      <div style={{ maxWidth: 400, width: "100%", textAlign: "center", padding: "0 24px" }}>
+        <div style={{ fontSize: 52, marginBottom: 16 }}>🎉</div>
+        <div className="title-lg" style={{ marginBottom: 12 }}>
           {mode === "casestudy" ? `${brand} décortiquée` : "Identité visuelle complète"}
         </div>
-        <div style={{ fontSize: 14, color: C.mut, lineHeight: 1.7, marginBottom: 24 }}>
+        <div className="body-sm" style={{ color: C.mut, lineHeight: 1.7, marginBottom: 28 }}>
           Tu as traversé les 8 étapes. Maintenant tu vois les marques différemment — tu vois les décisions derrière chaque choix visuel.
         </div>
         <button onClick={() => { setMode(null); setStep(0); setPhase("intro"); setDone(new Set()); setFinished(false); }}
-          style={{ ...btn, background: C.bg2, border: `0.5px solid ${C.bdr2}`, color: C.txt, width: "auto", padding: "11px 24px" }}>
+          className="btn-ghost">
           Recommencer
         </button>
       </div>
     </div>
   );
+
+  // ── MAIN APP ───────────────────────────────────────────────────────────────
 
   const prompt = mode === "casestudy" ? s.p_cs(brand) : s.p_cr;
   const dels = mode === "casestudy" ? s.d_cs : s.d_cr;
@@ -332,69 +353,77 @@ export default function CourseApp() {
   const isIntro = phase === "intro";
   const isDone = isIntro ? openDone : closeDone;
   const phaseColor = isIntro ? C.blue : C.green;
+  const isQA = phase === "intro" || phase === "outro";
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "system-ui,sans-serif", display: "flex", flexDirection: "column" }}>
-      {/* Header */}
-      <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(14,14,15,0.96)", backdropFilter: "blur(20px)", borderBottom: `0.5px solid ${C.bdr}`, padding: "12px 20px", display: "flex", alignItems: "center", gap: 12 }}>
+    <div className="app-shell">
+
+      {/* ── HEADER ── */}
+      <header className="app-header">
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 11, color: C.hint, letterSpacing: "0.07em", textTransform: "uppercase", marginBottom: 2 }}>
+          <div className="label-tag" style={{ marginBottom: 2 }}>
             {mode === "casestudy" ? `📍 ${brand}` : "✦ Création"} · Étape {step + 1}/8
           </div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: C.txt, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</div>
+          <div className="header-title">{s.name}</div>
         </div>
-        <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+        <div className="step-dots">
           {STEPS.map((_, i) => (
             <div key={i} onClick={() => { setStep(i); setPhase("intro"); }}
-              style={{ width: 8, height: 8, borderRadius: "50%", cursor: "pointer", transition: "background .2s", background: done.has(i) ? C.green : i === step ? C.blue : C.bg3 }} />
+              className="step-dot"
+              style={{ background: done.has(i) ? C.green : i === step ? C.blue : C.bg3 }} />
           ))}
         </div>
-      </div>
+      </header>
 
-      {/* Phase tabs */}
-      <div style={{ display: "flex", borderBottom: `0.5px solid ${C.bdr}` }}>
+      {/* ── PHASE TABS (desktop only) ── */}
+      <div className="phase-tabs-desktop">
         {["intro", "content", "outro"].map((p, i) => (
-          <div key={p} onClick={() => { setPhase(p); setMsgs([]); setOpenDone(false); setCloseDone(false); }}
-            style={{ flex: 1, padding: "10px 0", textAlign: "center", fontSize: 11, fontWeight: 500, letterSpacing: "0.05em", textTransform: "uppercase", color: phase === p ? C.txt : C.hint, borderBottom: `2px solid ${phase === p ? (p === "outro" ? C.green : C.blue) : "transparent"}`, cursor: "pointer", transition: "all .2s" }}>
+          <div key={p} onClick={() => changePhase(p)} className="phase-tab"
+            style={{
+              color: phase === p ? C.txt : C.hint,
+              borderBottom: `2px solid ${phase === p ? (p === "outro" ? C.green : C.blue) : "transparent"}`,
+            }}>
             {["1ère impression", "Contenu", "Dernière impression"][i]}
           </div>
         ))}
       </div>
 
-      {/* Body */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 140px", maxWidth: 760, margin: "0 auto", width: "100%" }}>
+      {/* ── BODY ── */}
+      <main className={`app-body${isQA ? " qa-mode" : ""}`}>
 
         {/* Q&A phases */}
-        {(phase === "intro" || phase === "outro") && (
+        {isQA && (
           <>
-            <div style={{ background: C.bg2, border: `0.5px solid ${C.bdr}`, borderLeft: `2px solid ${phaseColor}`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
-              <div style={{ fontSize: 10, color: phaseColor, marginBottom: 8, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            <div className="card" style={{ borderLeft: `2px solid ${phaseColor}`, marginBottom: 14 }}>
+              <div className="phase-label" style={{ color: phaseColor, marginBottom: 8 }}>
                 {isIntro ? "Mentor IA · Première impression" : "Mentor IA · Dernière impression"}
               </div>
-              <div style={{ fontSize: 14, color: C.txt, lineHeight: 1.75 }}>{question}</div>
+              <div className="body-md">{question}</div>
             </div>
 
             {msgs.map((m, i) => (
-              <div key={i} style={{ marginBottom: 10, display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
-                <div style={{ maxWidth: "85%", background: m.role === "user" ? "#1b1b32" : C.bg2, border: `0.5px solid ${m.role === "user" ? "rgba(79,127,255,.25)" : C.bdr}`, borderRadius: 12, padding: "11px 14px" }}>
-                  {m.role === "assistant" && <div style={{ fontSize: 10, color: phaseColor, marginBottom: 5, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.07em" }}>Mentor</div>}
-                  <div style={{ fontSize: 14, color: C.txt, lineHeight: 1.65 }}>{m.content}</div>
+              <div key={i} className={`msg-row ${m.role}`}>
+                <div className={`msg-bubble ${m.role}`}>
+                  {m.role === "assistant" && (
+                    <div className="phase-label" style={{ color: phaseColor, marginBottom: 5 }}>Mentor</div>
+                  )}
+                  <div className="body-md">{m.content}</div>
                 </div>
               </div>
             ))}
 
             {loading && (
-              <div style={{ display: "flex", gap: 4, padding: "9px 14px", background: C.bg2, borderRadius: 12, width: "fit-content", marginBottom: 10 }}>
+              <div className="typing-indicator">
                 {[0, 1, 2].map((i) => (
-                  <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: phaseColor, animation: `dot 1s ${i * 0.18}s infinite` }} />
+                  <div key={i} className="dot" style={{ animationDelay: `${i * 0.18}s`, background: phaseColor }} />
                 ))}
               </div>
             )}
             <div ref={endRef} />
 
             {isDone && (
-              <button onClick={isIntro ? () => setPhase("content") : nextStep}
-                style={{ ...btn, background: "rgba(79,127,255,0.1)", border: `0.5px solid rgba(79,127,255,.3)`, color: C.blue, marginTop: 10 }}>
+              <button onClick={isIntro ? () => changePhase("content") : nextStep}
+                className="btn-primary btn-blue" style={{ marginTop: 10 }}>
                 {isIntro ? "Voir le contenu →" : step < STEPS.length - 1 ? `Étape ${step + 2} : ${STEPS[step + 1].name} →` : "🎉 Terminer le cours"}
               </button>
             )}
@@ -404,80 +433,464 @@ export default function CourseApp() {
         {/* Content phase */}
         {phase === "content" && (
           <>
-            <div style={{ background: C.bg2, border: `0.5px solid ${C.bdr}`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+            <div className="card" style={{ marginBottom: 14 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: 99, background: "rgba(245,166,35,0.12)", border: `0.5px solid rgba(245,166,35,.3)`, color: C.amber, fontSize: 11, fontWeight: 500 }}>{s.tag}</span>
-                <span style={{ fontSize: 12, color: C.hint }}>Étape {step + 1}</span>
+                <span className="tag-chip">{s.tag}</span>
+                <span className="body-xs" style={{ color: C.hint }}>Étape {step + 1}</span>
               </div>
-              <div style={{ fontSize: 14, color: C.txt, lineHeight: 1.75 }}>{s.intro}</div>
+              <div className="body-md">{s.intro}</div>
             </div>
 
-            <button onClick={() => setShowEx(!showEx)}
-              style={{ width: "100%", background: showEx ? "rgba(245,166,35,0.08)" : C.bg2, border: `0.5px solid ${showEx ? "rgba(245,166,35,.3)" : C.bdr}`, borderRadius: 12, padding: "13px 16px", color: showEx ? C.amber : C.mut, fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "system-ui,sans-serif", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, transition: "all .2s" }}>
+            <button onClick={() => setShowEx(!showEx)} className="examples-toggle"
+              style={{ background: showEx ? "rgba(245,166,35,0.08)" : C.bg2, borderColor: showEx ? "rgba(245,166,35,.3)" : C.bdr, color: showEx ? C.amber : C.mut }}>
               <span>📚 {showEx ? "Masquer" : "Voir"} les 5 exemples de marques réelles</span>
               <span style={{ fontSize: 12 }}>{showEx ? "↑" : "↓"}</span>
             </button>
 
             {showEx && s.ex.map((ex, i) => (
-              <div key={i} style={{ background: C.bg2, border: `0.5px solid ${C.bdr}`, borderRadius: 12, padding: "14px 16px", marginBottom: 8 }}>
+              <div key={i} className="card example-card">
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <span style={{ fontSize: 18 }}>{ex.e}</span>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: C.txt }}>{ex.n}</span>
+                  <span className="body-sm" style={{ fontWeight: 600, color: C.txt }}>{ex.n}</span>
                 </div>
-                <div style={{ fontSize: 13, color: C.mut, lineHeight: 1.7 }}>{ex.d}</div>
+                <div className="body-sm" style={{ color: C.mut, lineHeight: 1.7 }}>{ex.d}</div>
               </div>
             ))}
 
             <div style={{ marginTop: 18 }}>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.hint, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.09em" }}>Prompt à utiliser</div>
-              <div style={{ background: "#0a0a0d", border: `0.5px solid ${C.bdr}`, borderLeft: `2px solid ${C.blue}`, borderRadius: 10, padding: "12px 14px", fontFamily: "monospace", fontSize: 12, color: "#bbb8b2", lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word", marginBottom: 8 }}>
-                {prompt}
-              </div>
-              <button onClick={copy} style={{ ...btn, background: C.bg2, border: `0.5px solid ${copied ? "rgba(46,232,160,.4)" : C.bdr2}`, color: copied ? C.green : C.mut, padding: "9px" }}>
+              <div className="section-label">Prompt à utiliser</div>
+              <div className="prompt-block">{prompt}</div>
+              <button onClick={copy} className="btn-ghost btn-copy"
+                style={{ borderColor: copied ? "rgba(46,232,160,.4)" : C.bdr2, color: copied ? C.green : C.mut }}>
                 {copied ? "✓ Copié" : "Copier le prompt"}
               </button>
             </div>
 
             <div style={{ marginTop: 18 }}>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.hint, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.09em" }}>Livrables de l'étape</div>
+              <div className="section-label">Livrables de l'étape</div>
               {dels.map((d, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 7 }}>
-                  <div style={{ width: 5, height: 5, borderRadius: "50%", background: C.green, flexShrink: 0, marginTop: 7 }} />
-                  <div style={{ fontSize: 13, color: C.mut, lineHeight: 1.5 }}>{d}</div>
+                <div key={i} className="deliverable-row">
+                  <div className="deliverable-dot" />
+                  <div className="body-sm" style={{ color: C.mut, lineHeight: 1.5 }}>{d}</div>
                 </div>
               ))}
             </div>
 
-            <button onClick={() => setPhase("outro")} style={{ ...btn, background: "rgba(46,232,160,0.1)", border: `0.5px solid rgba(46,232,160,.3)`, color: C.green, marginTop: 20 }}>
+            <button onClick={() => changePhase("outro")} className="btn-primary btn-green" style={{ marginTop: 20 }}>
               Réflexion finale →
             </button>
           </>
         )}
-      </div>
+      </main>
 
-      {/* Input bar */}
-      {(phase === "intro" || phase === "outro") && (
-        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(14,14,15,0.97)", backdropFilter: "blur(20px)", borderTop: `0.5px solid ${C.bdr}`, padding: "12px 20px 20px" }}>
-          <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", gap: 8, alignItems: "flex-end" }}>
+      {/* ── INPUT BAR (Q&A only) ── */}
+      {isQA && (
+        <div className="input-bar">
+          <div className="input-inner">
             <textarea ref={taRef} value={input} onChange={(e) => setInput(e.target.value)} rows={1}
               placeholder={isIntro ? "Ta réponse..." : "Ta réflexion..."}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-              style={{ flex: 1, background: C.bg2, border: `0.5px solid ${C.bdr2}`, borderRadius: 12, padding: "10px 14px", color: C.txt, fontSize: 14, outline: "none", resize: "none", fontFamily: "system-ui,sans-serif", lineHeight: 1.5 }} />
-            <button onClick={send} disabled={loading || !input.trim()}
-              style={{ width: 42, height: 42, borderRadius: 10, background: input.trim() ? phaseColor : C.bg3, border: "none", cursor: input.trim() ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background .2s" }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={input.trim() ? "#fff" : "#444"} strokeWidth="2.5">
-                <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+              className="chat-input" />
+            <button onClick={send} disabled={loading || !input.trim()} className="send-btn"
+              style={{ background: input.trim() ? phaseColor : C.bg3 }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                stroke={input.trim() ? "#fff" : "#444"} strokeWidth="2.5">
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
               </svg>
             </button>
           </div>
         </div>
       )}
 
+      {/* ── BOTTOM NAV (mobile only) ── */}
+      <nav className="bottom-nav">
+        {["intro", "content", "outro"].map((p, i) => {
+          const labels = ["Intro", "Contenu", "Réflexion"];
+          const icons = ["💬", "📖", "✨"];
+          const activeColor = p === "outro" ? C.green : C.blue;
+          return (
+            <button key={p} onClick={() => changePhase(p)} className="bottom-tab"
+              style={{ color: phase === p ? activeColor : C.hint }}>
+              <span className="bottom-tab-icon">{icons[i]}</span>
+              <span className="bottom-tab-label">{labels[i]}</span>
+              {phase === p && <div className="bottom-tab-bar" style={{ background: activeColor }} />}
+            </button>
+          );
+        })}
+      </nav>
+
       <style>{`
+        *, *::before, *::after { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        html, body { height: 100%; overflow: hidden; }
+
         @keyframes dot { 0%,100%{opacity:.25;transform:scale(.75)} 50%{opacity:1;transform:scale(1)} }
         textarea::placeholder { color: #3a3a3e; }
         input::placeholder { color: #3a3a3e; }
-        * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+
+        /* ── LAYOUT SHELL ── */
+        .app-shell {
+          height: 100dvh;
+          display: flex;
+          flex-direction: column;
+          background: ${C.bg};
+          font-family: system-ui, sans-serif;
+          overflow: hidden;
+        }
+
+        /* ── CENTERING SCREENS ── */
+        .screen-center {
+          min-height: 100dvh;
+          background: ${C.bg};
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          font-family: system-ui, sans-serif;
+        }
+        .onboarding-card { max-width: 460px; width: 100%; }
+
+        /* ── HEADER ── */
+        .app-header {
+          position: relative;
+          z-index: 50;
+          background: rgba(14,14,15,0.96);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-bottom: 0.5px solid ${C.bdr};
+          padding: 10px 16px;
+          display: flex;
+          align-items: center;
+          gap: 12;
+          flex-shrink: 0;
+        }
+        .header-title {
+          font-size: 14px;
+          font-weight: 600;
+          color: ${C.txt};
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .step-dots { display: flex; gap: 4px; flex-shrink: 0; }
+        .step-dot {
+          width: 7px; height: 7px; border-radius: 50%;
+          cursor: pointer; transition: background .2s;
+        }
+
+        /* ── PHASE TABS (desktop) ── */
+        .phase-tabs-desktop {
+          display: flex;
+          border-bottom: 0.5px solid ${C.bdr};
+          flex-shrink: 0;
+        }
+        .phase-tab {
+          flex: 1; padding: 10px 0;
+          text-align: center;
+          font-size: 11px; font-weight: 500;
+          letter-spacing: 0.05em; text-transform: uppercase;
+          cursor: pointer; transition: all .2s;
+        }
+
+        /* ── BODY ── */
+        .app-body {
+          flex: 1;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          padding: 16px 20px 24px;
+        }
+        .app-body.qa-mode { padding-bottom: 100px; }
+        .app-body > * { max-width: 720px; margin-left: auto; margin-right: auto; display: block; }
+        .app-body > div { max-width: 720px; margin-left: auto; margin-right: auto; }
+
+        /* ── INPUT BAR ── */
+        .input-bar {
+          flex-shrink: 0;
+          background: rgba(14,14,15,0.97);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-top: 0.5px solid ${C.bdr};
+          padding: 10px 16px;
+          padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        }
+        .input-inner {
+          max-width: 720px;
+          margin: 0 auto;
+          display: flex;
+          gap: 8px;
+          align-items: flex-end;
+        }
+        .chat-input {
+          flex: 1;
+          background: ${C.bg2};
+          border: 0.5px solid ${C.bdr2};
+          border-radius: 12px;
+          padding: 10px 14px;
+          color: ${C.txt};
+          font-size: 15px;
+          outline: none;
+          resize: none;
+          font-family: system-ui, sans-serif;
+          line-height: 1.5;
+          max-height: 120px;
+        }
+        .send-btn {
+          width: 44px; height: 44px;
+          border-radius: 12px; border: none;
+          cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0;
+          transition: background .2s;
+        }
+
+        /* ── BOTTOM NAV (mobile) ── */
+        .bottom-nav { display: none; }
+
+        /* ── CARDS & COMPONENTS ── */
+        .card {
+          background: ${C.bg2};
+          border: 0.5px solid ${C.bdr};
+          border-radius: 14px;
+          padding: 16px;
+          width: 100%;
+        }
+        .example-card { border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; }
+        .msg-row { margin-bottom: 10px; display: flex; width: 100%; }
+        .msg-row.user { justify-content: flex-end; }
+        .msg-row.assistant { justify-content: flex-start; }
+        .msg-bubble {
+          max-width: 85%;
+          border-radius: 12px;
+          padding: 11px 14px;
+        }
+        .msg-bubble.user {
+          background: #1b1b32;
+          border: 0.5px solid rgba(79,127,255,.25);
+        }
+        .msg-bubble.assistant {
+          background: ${C.bg2};
+          border: 0.5px solid ${C.bdr};
+        }
+        .typing-indicator {
+          display: flex; gap: 4px;
+          padding: 9px 14px;
+          background: ${C.bg2};
+          border-radius: 12px;
+          width: fit-content;
+          margin-bottom: 10px;
+        }
+        .dot {
+          width: 5px; height: 5px; border-radius: 50%;
+          animation: dot 1s infinite;
+        }
+        .prompt-block {
+          background: #0a0a0d;
+          border: 0.5px solid ${C.bdr};
+          border-left: 2px solid ${C.blue};
+          border-radius: 10px;
+          padding: 12px 14px;
+          font-family: monospace;
+          font-size: 12px;
+          color: #bbb8b2;
+          line-height: 1.7;
+          white-space: pre-wrap;
+          word-break: break-word;
+          margin-bottom: 8px;
+          width: 100%;
+        }
+        .deliverable-row {
+          display: flex; align-items: flex-start; gap: 8px; margin-bottom: 7px;
+        }
+        .deliverable-dot {
+          width: 5px; height: 5px; border-radius: 50%;
+          background: ${C.green}; flex-shrink: 0; margin-top: 7px;
+        }
+        .examples-toggle {
+          width: 100%;
+          border: 0.5px solid;
+          border-radius: 12px;
+          padding: 13px 16px;
+          font-size: 14px; font-weight: 500;
+          cursor: pointer;
+          font-family: system-ui, sans-serif;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+          transition: all .2s;
+        }
+
+        /* ── TYPOGRAPHY ── */
+        .label-tag {
+          font-size: 11px; letter-spacing: 0.08em;
+          text-transform: uppercase; color: ${C.hint};
+        }
+        .title-lg { font-size: 22px; font-weight: 600; color: ${C.txt}; }
+        .title-md { font-size: 16px; font-weight: 600; color: ${C.txt}; }
+        .body-lg { font-size: 15px; color: ${C.txt}; line-height: 1.7; }
+        .body-md { font-size: 14px; color: ${C.txt}; line-height: 1.75; }
+        .body-sm { font-size: 13px; color: ${C.txt}; }
+        .body-xs { font-size: 11px; }
+        .phase-label {
+          font-size: 10px; font-weight: 600;
+          text-transform: uppercase; letter-spacing: 0.08em;
+        }
+        .section-label {
+          font-size: 10px; font-weight: 600; color: ${C.hint};
+          margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.09em;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-primary {
+          display: block; width: 100%;
+          border-radius: 12px; font-size: 14px; font-weight: 500;
+          padding: 14px; cursor: pointer;
+          transition: opacity .15s;
+          font-family: system-ui, sans-serif;
+          border: 0.5px solid;
+          text-align: center;
+        }
+        .btn-blue {
+          background: rgba(79,127,255,0.1);
+          border-color: rgba(79,127,255,.3);
+          color: ${C.blue};
+        }
+        .btn-green {
+          background: rgba(46,232,160,0.12);
+          border-color: rgba(46,232,160,0.3);
+          color: ${C.green};
+        }
+        .btn-ghost {
+          background: ${C.bg2};
+          border: 0.5px solid ${C.bdr2};
+          color: ${C.txt};
+          border-radius: 12px;
+          font-size: 14px; font-weight: 500;
+          padding: 11px 24px;
+          cursor: pointer;
+          font-family: system-ui, sans-serif;
+        }
+        .btn-copy {
+          display: block; width: 100%;
+          border: 0.5px solid;
+          border-radius: 10px;
+          padding: 9px;
+          background: ${C.bg2};
+          cursor: pointer;
+          font-family: system-ui, sans-serif;
+          font-size: 13px;
+          text-align: center;
+        }
+        .back-btn {
+          background: none; border: none; color: ${C.hint};
+          cursor: pointer; font-size: 13px;
+          margin-bottom: 24px; padding: 0;
+          font-family: system-ui, sans-serif;
+          display: block;
+        }
+        .tag-chip {
+          display: inline-block; padding: 3px 10px;
+          border-radius: 99px;
+          background: rgba(245,166,35,0.12);
+          border: 0.5px solid rgba(245,166,35,.3);
+          color: ${C.amber};
+          font-size: 11px; font-weight: 500;
+        }
+        .text-input {
+          width: 100%;
+          background: ${C.bg2};
+          border: 0.5px solid ${C.bdr2};
+          border-radius: 12px;
+          padding: 14px 16px;
+          color: ${C.txt};
+          font-size: 15px;
+          outline: none;
+          font-family: system-ui, sans-serif;
+          margin-bottom: 12px;
+          display: block;
+        }
+        .choice-card {
+          background: ${C.bg2};
+          border: 0.5px solid ${C.bdr};
+          border-radius: 16px;
+          padding: 20px 24px;
+          cursor: pointer;
+          margin-bottom: 12px;
+          transition: border-color .2s;
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ── MOBILE OVERRIDES ── */
+        @media (max-width: 767px) {
+          html, body { overflow: hidden; }
+
+          .app-shell { height: 100dvh; }
+
+          .app-header { padding: 10px 14px 10px; }
+          .header-title { font-size: 13px; }
+          .step-dot { width: 6px; height: 6px; }
+
+          /* Hide desktop phase tabs on mobile */
+          .phase-tabs-desktop { display: none; }
+
+          /* Show bottom nav on mobile */
+          .bottom-nav {
+            display: flex;
+            flex-shrink: 0;
+            background: rgba(14,14,15,0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 0.5px solid ${C.bdr};
+            padding-bottom: env(safe-area-inset-bottom, 8px);
+          }
+          .bottom-tab {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 8px 4px 6px;
+            background: none; border: none;
+            cursor: pointer; position: relative;
+            font-family: system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 52px;
+          }
+          .bottom-tab-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
+          .bottom-tab-label { font-size: 10px; font-weight: 500; letter-spacing: 0.02em; }
+          .bottom-tab-bar {
+            position: absolute; top: 0; left: 20%; right: 20%;
+            height: 2px; border-radius: 0 0 2px 2px;
+          }
+
+          /* Input bar — sits above bottom nav */
+          .input-bar { padding: 8px 12px; padding-bottom: 8px; }
+          .chat-input { font-size: 16px; /* prevents iOS zoom */ }
+          .send-btn { width: 42px; height: 42px; }
+
+          /* Body padding: account for input + bottom nav */
+          .app-body { padding: 12px 14px 16px; }
+          .app-body.qa-mode { padding-bottom: 16px; }
+
+          /* Cards */
+          .card { padding: 14px; }
+          .msg-bubble { max-width: 88%; }
+          .prompt-block { font-size: 11px; }
+
+          /* Onboarding */
+          .onboarding-card { padding: 0; }
+          .title-lg { font-size: 20px; }
+          .choice-card { padding: 18px 20px; }
+        }
+
+        /* ── DESKTOP ENHANCEMENTS ── */
+        @media (min-width: 768px) {
+          .bottom-nav { display: none; }
+          .app-body { padding: 20px 24px 32px; }
+          .app-body.qa-mode { padding-bottom: 120px; }
+          .app-header { padding: 12px 24px; }
+          .input-bar { padding: 12px 24px 20px; }
+          .chat-input { font-size: 14px; }
+          .title-lg { font-size: 24px; }
+          .body-md { font-size: 14px; }
+        }
       `}</style>
     </div>
   );
