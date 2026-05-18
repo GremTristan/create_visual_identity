@@ -157,26 +157,40 @@ const STEPS = [
 ];
 
 const C = {
-  bg: "#F0F2F7",
+  bg: "#F8F5FF",
   white: "#FFFFFF",
-  primary: "#5467F4",
-  primaryDark: "#4355E3",
-  primaryLight: "#EEEFFE",
-  primaryBorder: "rgba(84,103,244,0.2)",
-  green: "#1AC97A",
-  greenDark: "#15A864",
-  greenLight: "#E6FAF2",
-  greenBorder: "rgba(26,201,122,0.25)",
-  amber: "#F5A623",
-  amberLight: "#FEF6E8",
-  amberBorder: "rgba(245,166,35,0.25)",
-  text: "#1A1B2E",
-  sub: "#4E4F78",
-  muted: "#8A8CAC",
-  light: "#B8BAD0",
-  border: "#E2E4F0",
-  shadowSm: "0 1px 4px rgba(0,0,0,0.05)",
-  shadow: "0 2px 12px rgba(0,0,0,0.07)",
+  // Purple gradient
+  p1: "#8B5CF6",
+  p2: "#6D28D9",
+  grad: "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)",
+  gradHover: "linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)",
+  pLight: "#EDE9FE",
+  pBorder: "rgba(139,92,246,0.2)",
+  // Teal (case study)
+  t1: "#0EA5E9",
+  t2: "#0284C7",
+  tGrad: "linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)",
+  tLight: "#E0F2FE",
+  // Success green
+  green: "#22C55E",
+  greenLight: "#DCFCE7",
+  greenDark: "#16A34A",
+  greenGrad: "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)",
+  // Amber
+  amber: "#FBBF24",
+  amberLight: "#FEF3C7",
+  amberDark: "#D97706",
+  // Coral
+  coral: "#F43F5E",
+  coralLight: "#FFE4E6",
+  text: "#0F0A1E",
+  sub: "#374151",
+  muted: "#6B7280",
+  light: "#9CA3AF",
+  border: "#E9E4F9",
+  shadowSm: "0 2px 8px rgba(109,40,217,0.06)",
+  shadow: "0 8px 32px rgba(109,40,217,0.12), 0 2px 8px rgba(0,0,0,0.06)",
+  shadowHover: "0 16px 48px rgba(109,40,217,0.18), 0 4px 12px rgba(0,0,0,0.08)",
 };
 
 async function callTutor(messages, system) {
@@ -210,7 +224,7 @@ Phase : ${phase === "intro" ? "Première impression (ouverture)" : "Dernière im
 }
 
 const ICON_LAYERS = (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="12 2 2 7 12 12 22 7 12 2" />
     <polyline points="2 17 12 22 22 17" />
     <polyline points="2 12 12 17 22 12" />
@@ -230,7 +244,7 @@ const ICON_CHECK = (color = "#fff", size = 12) => (
 );
 
 const ICON_ARROW = (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
     <path d="m9 18 6-6-6-6" />
   </svg>
 );
@@ -238,6 +252,12 @@ const ICON_ARROW = (
 const ICON_BACK = (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
     <path d="m15 18-6-6 6-6" />
+  </svg>
+);
+
+const ICON_SPARK = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z" />
   </svg>
 );
 
@@ -260,7 +280,6 @@ export default function CourseApp() {
 
   const s = STEPS[step];
   const isIntro = phase === "intro";
-  const phaseColor = isIntro ? C.primary : C.green;
   const isDone = isIntro ? openDone : closeDone;
   const prompt = mode === "casestudy" ? s.p_cs(brand) : s.p_cr;
   const dels = mode === "casestudy" ? s.d_cs : s.d_cr;
@@ -317,95 +336,103 @@ export default function CourseApp() {
   // ─── Shared styles ────────────────────────────────────────
   const card = {
     background: C.white,
-    border: `1px solid ${C.border}`,
-    borderRadius: 16,
+    border: `1.5px solid ${C.border}`,
+    borderRadius: 20,
     boxShadow: C.shadowSm,
-    padding: "20px 24px",
+    padding: "22px 26px",
     marginBottom: 14,
+    transition: "box-shadow .2s ease, transform .2s ease",
   };
 
   const btnBase = {
     fontFamily: "system-ui,sans-serif",
     cursor: "pointer",
-    borderRadius: 12,
+    borderRadius: 14,
     fontSize: 14,
-    fontWeight: 600,
-    padding: "12px 22px",
+    fontWeight: 700,
+    padding: "13px 24px",
     border: "none",
     display: "inline-flex",
     alignItems: "center",
     gap: 8,
-    transition: "opacity .15s",
+    transition: "opacity .15s, transform .15s",
+    letterSpacing: "-0.01em",
   };
 
-  const btnPrimary = { ...btnBase, background: C.primary, color: "#fff" };
-  const btnGreen   = { ...btnBase, background: C.green, color: "#fff" };
-  const btnGhost   = { ...btnBase, background: C.primaryLight, color: C.primary, border: `1px solid ${C.primaryBorder}` };
+  const pGrad = mode === "casestudy" ? C.tGrad : C.grad;
+  const pLight = mode === "casestudy" ? C.tLight : C.pLight;
+  const pColor = mode === "casestudy" ? C.t1 : C.p1;
+
+  const btnPrimary = { ...btnBase, background: pGrad, color: "#fff", boxShadow: `0 4px 16px ${pColor}40` };
+  const btnGreen   = { ...btnBase, background: C.greenGrad, color: "#fff", boxShadow: "0 4px 16px #22C55E40" };
+  const btnGhost   = { ...btnBase, background: C.pLight, color: C.p1, border: `1.5px solid ${C.pBorder}` };
 
   // ─── MODE SELECTION ───────────────────────────────────────
   if (!mode) return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 20px", fontFamily: "system-ui,sans-serif" }}>
 
       {/* Logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 40 }}>
-        <div style={{ width: 38, height: 38, borderRadius: 11, background: C.primary, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 44 }}>
+        <div style={{ width: 42, height: 42, borderRadius: 13, background: C.grad, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 8px 24px ${C.p1}50` }}>
           {ICON_LAYERS}
         </div>
-        <span style={{ fontSize: 18, fontWeight: 800, color: C.text, letterSpacing: "-0.02em" }}>Brand Studio</span>
+        <span style={{ fontSize: 20, fontWeight: 800, color: C.text, letterSpacing: "-0.03em" }}>Brand Studio</span>
       </div>
 
       {/* Headline */}
-      <div style={{ textAlign: "center", marginBottom: 40, maxWidth: 420 }}>
-        <h1 style={{ fontSize: 30, fontWeight: 800, color: C.text, margin: "0 0 12px", letterSpacing: "-0.03em", lineHeight: 1.2 }}>
-          Construis une identité<br />visuelle professionnelle
+      <div style={{ textAlign: "center", marginBottom: 44, maxWidth: 440 }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: C.pLight, borderRadius: 99, padding: "5px 14px", marginBottom: 16, fontSize: 12, fontWeight: 700, color: C.p1, letterSpacing: "0.02em" }}>
+          {ICON_SPARK} 8 étapes guidées
+        </div>
+        <h1 style={{ fontSize: 34, fontWeight: 900, color: C.text, margin: "0 0 14px", letterSpacing: "-0.04em", lineHeight: 1.15 }}>
+          Construis une identité<br />
+          <span style={{ background: C.grad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>visuelle qui marque</span>
         </h1>
         <p style={{ fontSize: 15, color: C.muted, margin: 0, lineHeight: 1.65 }}>
-          8 étapes structurées · Exemples de vraies marques · Prompts IA prêts à l'emploi
+          Exemples de vraies marques · Prompts IA prêts à l'emploi · Guide interactif
         </p>
       </div>
 
       {/* Mode cards */}
-      <div style={{ width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ width: "100%", maxWidth: 460, display: "flex", flexDirection: "column", gap: 14 }}>
         {[
           {
             id: "create",
-            iconBg: C.primaryLight,
-            iconColor: C.primary,
-            iconPath: "M12 5v14M5 12h14",
+            emoji: "✦",
+            grad: C.grad,
+            glow: C.p1,
             title: "Créer ma marque",
-            desc: "Construis une identité visuelle de A à Z avec un guide à chaque étape.",
-            badge: "Création", badgeColor: C.primary, badgeBg: C.primaryLight,
+            desc: "Construis une identité visuelle de A à Z avec un coach à chaque étape.",
+            badge: "Création",
           },
           {
             id: "setup",
-            iconBg: C.greenLight,
-            iconColor: C.green,
-            iconPath: "m21 21-4.35-4.35M11 11m-8 0a8 8 0 1 0 16 0 8 8 0 0 0-16 0",
+            emoji: "◎",
+            grad: C.tGrad,
+            glow: C.t1,
             title: "Étude de cas",
-            desc: "Analyse une marque existante avec la même trame pour décoder ses choix créatifs.",
-            badge: "Analyse", badgeColor: C.greenDark, badgeBg: C.greenLight,
+            desc: "Analyse une marque existante pour décoder ses choix créatifs en profondeur.",
+            badge: "Analyse",
           },
         ].map((opt) => (
           <div
             key={opt.id}
             onClick={() => setMode(opt.id)}
-            style={{ ...card, marginBottom: 0, cursor: "pointer", padding: "18px 20px", display: "flex", alignItems: "flex-start", gap: 16 }}
-            onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.primaryBorder; e.currentTarget.style.boxShadow = C.shadow; }}
-            onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.boxShadow = C.shadowSm; }}
+            style={{ background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 22, padding: "20px 22px", cursor: "pointer", display: "flex", alignItems: "center", gap: 18, transition: "all .2s ease", boxShadow: C.shadowSm }}
+            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 12px 40px ${opt.glow}20`; e.currentTarget.style.borderColor = `${opt.glow}40`; e.currentTarget.style.transform = "translateY(-2px)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = C.shadowSm; e.currentTarget.style.borderColor = C.border; e.currentTarget.style.transform = "none"; }}
           >
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: opt.iconBg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={opt.iconColor} strokeWidth="2" strokeLinecap="round">
-                <path d={opt.iconPath} />
-              </svg>
+            <div style={{ width: 52, height: 52, borderRadius: 16, background: opt.grad, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 22, color: "#fff", boxShadow: `0 6px 20px ${opt.glow}40`, fontWeight: 700 }}>
+              {opt.emoji}
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
-                <span style={{ fontSize: 15, fontWeight: 700, color: C.text }}>{opt.title}</span>
-                <span style={{ fontSize: 10, fontWeight: 700, color: opt.badgeColor, background: opt.badgeBg, borderRadius: 6, padding: "2px 8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>{opt.badge}</span>
+                <span style={{ fontSize: 16, fontWeight: 800, color: C.text, letterSpacing: "-0.02em" }}>{opt.title}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#fff", background: opt.grad, borderRadius: 8, padding: "2px 9px", letterSpacing: "0.05em", textTransform: "uppercase" }}>{opt.badge}</span>
               </div>
               <p style={{ margin: 0, fontSize: 13, color: C.muted, lineHeight: 1.55 }}>{opt.desc}</p>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.light} strokeWidth="2" style={{ flexShrink: 0, marginTop: 4 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.light} strokeWidth="2" style={{ flexShrink: 0 }}>
               <path d="m9 18 6-6-6-6" />
             </svg>
           </div>
@@ -413,12 +440,12 @@ export default function CourseApp() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: "flex", gap: 20, marginTop: 36, flexWrap: "wrap", justifyContent: "center" }}>
-        {["8 étapes guidées", "40 exemples de marques", "8 prompts IA"].map((t) => (
-          <span key={t} style={{ fontSize: 12, color: C.light, display: "flex", alignItems: "center", gap: 5 }}>
-            <span style={{ width: 3, height: 3, borderRadius: "50%", background: C.light, display: "inline-block" }} />
-            {t}
-          </span>
+      <div style={{ display: "flex", gap: 24, marginTop: 40, flexWrap: "wrap", justifyContent: "center" }}>
+        {[["40", "exemples de marques"], ["8", "prompts IA"], ["100%", "gratuit"]].map(([n, l]) => (
+          <div key={l} style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 18, fontWeight: 900, color: C.p1, letterSpacing: "-0.03em" }}>{n}</div>
+            <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{l}</div>
+          </div>
         ))}
       </div>
     </div>
@@ -427,15 +454,16 @@ export default function CourseApp() {
   // ─── BRAND INPUT ──────────────────────────────────────────
   if (mode === "setup") return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 20px", fontFamily: "system-ui,sans-serif" }}>
-      <div style={{ width: "100%", maxWidth: 420 }}>
+      <div style={{ width: "100%", maxWidth: 440 }}>
         <button
           onClick={() => setMode(null)}
-          style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 13, fontWeight: 600, marginBottom: 36, padding: 0, fontFamily: "system-ui,sans-serif", display: "flex", alignItems: "center", gap: 6 }}
+          style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 13, fontWeight: 700, marginBottom: 36, padding: 0, fontFamily: "system-ui,sans-serif", display: "flex", alignItems: "center", gap: 6 }}
         >
           {ICON_BACK} Retour
         </button>
 
-        <h2 style={{ fontSize: 24, fontWeight: 800, color: C.text, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Quelle marque analyser ?</h2>
+        <div style={{ width: 52, height: 52, borderRadius: 16, background: C.tGrad, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20, boxShadow: `0 8px 24px ${C.t1}40`, fontSize: 24 }}>◎</div>
+        <h2 style={{ fontSize: 28, fontWeight: 900, color: C.text, margin: "0 0 8px", letterSpacing: "-0.03em" }}>Quelle marque analyser ?</h2>
         <p style={{ margin: "0 0 28px", fontSize: 14, color: C.muted, lineHeight: 1.65 }}>
           Choisis une marque que tu trouves intéressante — locale, nationale ou mondiale.
         </p>
@@ -450,28 +478,30 @@ export default function CourseApp() {
               setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro");
             }
           }}
-          style={{ width: "100%", background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 12, padding: "14px 16px", color: C.text, fontSize: 15, outline: "none", fontFamily: "system-ui,sans-serif", marginBottom: 10, boxSizing: "border-box" }}
-          onFocus={(e) => (e.target.style.borderColor = C.primary)}
+          style={{ width: "100%", background: C.white, border: `2px solid ${C.border}`, borderRadius: 14, padding: "15px 18px", color: C.text, fontSize: 15, outline: "none", fontFamily: "system-ui,sans-serif", marginBottom: 12, boxSizing: "border-box", fontWeight: 500, transition: "border-color .2s" }}
+          onFocus={(e) => (e.target.style.borderColor = C.t1)}
           onBlur={(e) => (e.target.style.borderColor = C.border)}
         />
 
         <button
           onClick={() => { if (brandInput.trim()) { setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro"); } }}
-          style={{ ...btnGreen, width: "100%", justifyContent: "center" }}
+          style={{ ...btnBase, background: C.tGrad, color: "#fff", width: "100%", justifyContent: "center", boxShadow: `0 6px 20px ${C.t1}40` }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
         >
           Analyser {brandInput || "cette marque"} {ICON_ARROW}
         </button>
 
-        <div style={{ marginTop: 24 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>Suggestions</div>
+        <div style={{ marginTop: 28 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>Suggestions populaires</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {["Apple", "Nike", "Airbnb", "Patagonia", "Spotify", "Glossier"].map((b) => (
               <button
                 key={b}
                 onClick={() => setBrandInput(b)}
-                style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 8, padding: "6px 14px", fontSize: 13, color: C.sub, cursor: "pointer", fontFamily: "system-ui,sans-serif", fontWeight: 500 }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = C.primaryBorder)}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = C.border)}
+                style={{ background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 10, padding: "7px 16px", fontSize: 13, color: C.sub, cursor: "pointer", fontFamily: "system-ui,sans-serif", fontWeight: 600, transition: "all .15s" }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.t1; e.currentTarget.style.color = C.t1; e.currentTarget.style.background = C.tLight; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.sub; e.currentTarget.style.background = C.white; }}
               >
                 {b}
               </button>
@@ -485,19 +515,21 @@ export default function CourseApp() {
   // ─── FINISHED ─────────────────────────────────────────────
   if (finished) return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 20px", fontFamily: "system-ui,sans-serif", textAlign: "center" }}>
-      <div style={{ width: 72, height: 72, borderRadius: "50%", background: C.greenLight, border: `2px solid ${C.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
-        {ICON_CHECK(C.green, 28)}
+      <div style={{ width: 80, height: 80, borderRadius: "50%", background: C.greenGrad, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 28, boxShadow: "0 12px 40px #22C55E50" }}>
+        {ICON_CHECK("#fff", 32)}
       </div>
-      <h2 style={{ fontSize: 26, fontWeight: 800, color: C.text, margin: "0 0 12px", letterSpacing: "-0.02em" }}>
-        {mode === "casestudy" ? `${brand} décortiquée` : "Identité visuelle complète"}
+      <h2 style={{ fontSize: 30, fontWeight: 900, color: C.text, margin: "0 0 12px", letterSpacing: "-0.03em" }}>
+        {mode === "casestudy" ? `${brand} décortiquée ✦` : "Identité complète ✦"}
       </h2>
-      <p style={{ fontSize: 15, color: C.muted, margin: "0 0 36px", maxWidth: 340, lineHeight: 1.65 }}>
+      <p style={{ fontSize: 15, color: C.muted, margin: "0 0 36px", maxWidth: 340, lineHeight: 1.7 }}>
         Tu as traversé les 8 étapes. Tu vois maintenant les décisions derrière chaque choix visuel.
       </p>
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
         <button
           onClick={() => { setMode(null); setStep(0); setPhase("intro"); setDone(new Set()); setFinished(false); setBrand(""); setBrandInput(""); }}
           style={btnPrimary}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
         >
           Recommencer
         </button>
@@ -513,20 +545,22 @@ export default function CourseApp() {
 
   // ─── MAIN COURSE ──────────────────────────────────────────
   const progress = (done.size / STEPS.length) * 100;
+  const phaseGrad = isIntro ? pGrad : C.greenGrad;
+  const phaseColor = isIntro ? pColor : C.green;
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "system-ui,sans-serif", display: "flex", flexDirection: "column" }}>
 
       {/* ── HEADER ── */}
-      <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(255,255,255,0.96)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.border}` }}>
-        <div style={{ maxWidth: 740, margin: "0 auto", padding: "0 20px", display: "flex", alignItems: "center", gap: 12, height: 58 }}>
+      <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(248,245,255,0.95)", backdropFilter: "blur(16px)", borderBottom: `1.5px solid ${C.border}` }}>
+        <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px", display: "flex", alignItems: "center", gap: 14, height: 60 }}>
 
           {/* Logo */}
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <div style={{ width: 28, height: 28, borderRadius: 8, background: C.primary, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 30, height: 30, borderRadius: 9, background: C.grad, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 12px ${C.p1}50` }}>
               {ICON_LAYERS}
             </div>
-            <span style={{ fontSize: 13, fontWeight: 800, color: C.text, letterSpacing: "-0.01em" }}>Brand Studio</span>
+            <span style={{ fontSize: 14, fontWeight: 900, color: C.text, letterSpacing: "-0.02em" }}>Brand Studio</span>
           </div>
 
           {/* Stepper */}
@@ -540,19 +574,20 @@ export default function CourseApp() {
                     onClick={() => { setStep(i); setPhase("intro"); }}
                     title={st.name}
                     style={{
-                      width: 28, height: 28, borderRadius: "50%",
+                      width: 30, height: 30, borderRadius: "50%",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      background: isComp ? C.green : isCurr ? C.primary : C.white,
-                      border: `2px solid ${isComp ? C.green : isCurr ? C.primary : C.border}`,
+                      background: isComp ? C.greenGrad : isCurr ? pGrad : C.white,
+                      border: `2px solid ${isComp ? C.green : isCurr ? pColor : C.border}`,
                       color: isComp || isCurr ? "#fff" : C.light,
-                      fontSize: 11, fontWeight: 700, cursor: "pointer",
-                      flexShrink: 0, transition: "all .2s",
+                      fontSize: 11, fontWeight: 800, cursor: "pointer",
+                      flexShrink: 0, transition: "all .25s ease",
+                      boxShadow: isCurr ? `0 4px 14px ${pColor}50` : isComp ? "0 4px 14px #22C55E40" : "none",
                     }}
                   >
-                    {isComp ? ICON_CHECK("#fff", 10) : i + 1}
+                    {isComp ? ICON_CHECK("#fff", 11) : i + 1}
                   </div>
                   {i < STEPS.length - 1 && (
-                    <div style={{ width: 14, height: 2, background: done.has(i) ? C.green : C.border, flexShrink: 0 }} />
+                    <div style={{ width: 12, height: 2.5, background: done.has(i) ? C.green : C.border, borderRadius: 2, flexShrink: 0, transition: "background .3s" }} />
                   )}
                 </div>
               );
@@ -561,10 +596,11 @@ export default function CourseApp() {
 
           {/* Mode badge */}
           <div style={{
-            flexShrink: 0, fontSize: 11, fontWeight: 700,
-            color: mode === "casestudy" ? C.greenDark : C.primary,
-            background: mode === "casestudy" ? C.greenLight : C.primaryLight,
-            borderRadius: 8, padding: "4px 10px", letterSpacing: "0.01em",
+            flexShrink: 0, fontSize: 11, fontWeight: 800,
+            color: "#fff",
+            background: pGrad,
+            borderRadius: 10, padding: "5px 12px", letterSpacing: "0.02em",
+            boxShadow: `0 4px 12px ${pColor}40`,
           }}>
             {mode === "casestudy" ? brand : "Création"}
           </div>
@@ -572,69 +608,72 @@ export default function CourseApp() {
 
         {/* Progress bar */}
         <div style={{ height: 3, background: C.border }}>
-          <div style={{ height: "100%", width: `${progress}%`, background: C.green, transition: "width .5s ease" }} />
+          <div style={{ height: "100%", width: `${progress}%`, background: C.greenGrad, transition: "width .5s ease", borderRadius: "0 2px 2px 0" }} />
         </div>
       </div>
 
       {/* ── BODY ── */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "28px 20px 130px", maxWidth: 740, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+      <div style={{ flex: 1, overflowY: "auto", padding: "28px 20px 140px", maxWidth: 760, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
 
-        {/* Step title */}
-        <div style={{ marginBottom: 22 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-            <span style={{ fontSize: 10, fontWeight: 700, color: C.amber, background: C.amberLight, borderRadius: 6, padding: "3px 10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+        {/* Step header */}
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+            <span style={{ fontSize: 11, fontWeight: 800, color: "#fff", background: `linear-gradient(135deg, ${C.amber} 0%, ${C.amberDark} 100%)`, borderRadius: 8, padding: "3px 12px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
               {s.tag}
             </span>
-            <span style={{ fontSize: 12, color: C.muted, fontWeight: 500 }}>Étape {step + 1} / {STEPS.length}</span>
+            <span style={{ fontSize: 12, color: C.muted, fontWeight: 600 }}>Étape {step + 1} / {STEPS.length}</span>
           </div>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: C.text, margin: 0, letterSpacing: "-0.025em" }}>{s.name}</h2>
+          <h2 style={{ fontSize: 26, fontWeight: 900, color: C.text, margin: 0, letterSpacing: "-0.03em" }}>{s.name}</h2>
         </div>
 
         {/* ── Q&A PHASES ── */}
         {(phase === "intro" || phase === "outro") && (
           <>
             {/* Question card */}
-            <div style={{ ...card, borderLeft: `3px solid ${phaseColor}` }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: phaseColor, textTransform: "uppercase", letterSpacing: "0.09em", marginBottom: 10 }}>
-                {isIntro ? "Avant de commencer" : "Pour aller plus loin"}
+            <div style={{ ...card, borderLeft: `4px solid ${phaseColor}`, background: `linear-gradient(135deg, ${C.white} 0%, ${pLight}60 100%)` }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = C.shadow; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = C.shadowSm; e.currentTarget.style.transform = "none"; }}
+            >
+              <div style={{ fontSize: 10, fontWeight: 800, background: phaseGrad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
+                {isIntro ? "✦ Avant de commencer" : "✦ Pour aller plus loin"}
               </div>
-              <p style={{ fontSize: 15, color: C.text, margin: 0, lineHeight: 1.75, fontWeight: 500 }}>{currentQ()}</p>
+              <p style={{ fontSize: 15, color: C.text, margin: 0, lineHeight: 1.8, fontWeight: 500 }}>{currentQ()}</p>
             </div>
 
             {/* Messages */}
             {msgs.map((m, i) => (
-              <div key={i} style={{ marginBottom: 10, display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start", alignItems: "flex-end", gap: 8 }}>
+              <div key={i} style={{ marginBottom: 12, display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start", alignItems: "flex-end", gap: 10 }}>
                 {m.role === "assistant" && (
-                  <div style={{ width: 26, height: 26, borderRadius: "50%", background: phaseColor, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
+                  <div style={{ width: 30, height: 30, borderRadius: "50%", background: phaseGrad, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: `0 4px 12px ${phaseColor}40` }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                   </div>
                 )}
                 <div style={{
                   maxWidth: "78%",
-                  background: m.role === "user" ? C.primary : C.white,
-                  border: `1px solid ${m.role === "user" ? "transparent" : C.border}`,
-                  borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                  padding: "12px 16px",
-                  boxShadow: C.shadowSm,
+                  background: m.role === "user" ? phaseGrad : C.white,
+                  border: `1.5px solid ${m.role === "user" ? "transparent" : C.border}`,
+                  borderRadius: m.role === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                  padding: "13px 18px",
+                  boxShadow: m.role === "user" ? `0 6px 20px ${phaseColor}30` : C.shadowSm,
                 }}>
-                  <p style={{ fontSize: 14, color: m.role === "user" ? "#fff" : C.text, margin: 0, lineHeight: 1.65 }}>{m.content}</p>
+                  <p style={{ fontSize: 14, color: m.role === "user" ? "#fff" : C.text, margin: 0, lineHeight: 1.7 }}>{m.content}</p>
                 </div>
               </div>
             ))}
 
             {/* Loading */}
             {loading && (
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginBottom: 10 }}>
-                <div style={{ width: 26, height: 26, borderRadius: "50%", background: phaseColor, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 10, marginBottom: 12 }}>
+                <div style={{ width: 30, height: 30, borderRadius: "50%", background: phaseGrad, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
                 </div>
-                <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: "16px 16px 16px 4px", padding: "14px 18px", display: "flex", gap: 5, boxShadow: C.shadowSm }}>
+                <div style={{ background: C.white, border: `1.5px solid ${C.border}`, borderRadius: "18px 18px 18px 4px", padding: "14px 20px", display: "flex", gap: 5, boxShadow: C.shadowSm }}>
                   {[0, 1, 2].map((i) => (
-                    <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: phaseColor, animation: `blink 1.2s ${i * 0.2}s infinite` }} />
+                    <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: phaseColor, animation: `blink 1.2s ${i * 0.2}s infinite` }} />
                   ))}
                 </div>
               </div>
@@ -645,13 +684,15 @@ export default function CourseApp() {
             {isDone && !loading && (
               <button
                 onClick={isIntro ? () => setPhase("content") : nextStep}
-                style={{ ...btnPrimary, marginTop: 8 }}
+                style={{ ...btnPrimary, marginTop: 10 }}
+                onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.9"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "none"; }}
               >
                 {isIntro
                   ? "Voir le cours"
                   : step < STEPS.length - 1
                     ? `Étape suivante : ${STEPS[step + 1].name}`
-                    : "Terminer le cours"}
+                    : "Terminer le cours ✦"}
                 {ICON_ARROW}
               </button>
             )}
@@ -662,8 +703,12 @@ export default function CourseApp() {
         {phase === "content" && (
           <>
             {/* Intro text */}
-            <div style={card}>
-              <p style={{ fontSize: 15, color: C.text, margin: 0, lineHeight: 1.8 }}>{s.intro}</p>
+            <div
+              style={{ ...card, background: `linear-gradient(135deg, ${C.white} 60%, ${pLight}80 100%)` }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = C.shadow; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = C.shadowSm; e.currentTarget.style.transform = "none"; }}
+            >
+              <p style={{ fontSize: 15, color: C.text, margin: 0, lineHeight: 1.85, fontWeight: 500 }}>{s.intro}</p>
             </div>
 
             {/* Examples accordion */}
@@ -671,39 +716,46 @@ export default function CourseApp() {
               <button
                 onClick={() => setShowEx(!showEx)}
                 style={{
-                  width: "100%", background: C.white, border: `1px solid ${showEx ? C.amberBorder : C.border}`,
-                  borderRadius: 16, padding: "14px 18px", cursor: "pointer",
+                  width: "100%", background: showEx ? `linear-gradient(135deg, ${C.white} 60%, ${C.amberLight} 100%)` : C.white,
+                  border: `1.5px solid ${showEx ? C.amber + "60" : C.border}`,
+                  borderRadius: 20, padding: "16px 20px", cursor: "pointer",
                   fontFamily: "system-ui,sans-serif", display: "flex", alignItems: "center",
-                  justifyContent: "space-between", boxShadow: C.shadowSm, marginBottom: showEx ? 8 : 0,
+                  justifyContent: "space-between", boxShadow: C.shadowSm, marginBottom: showEx ? 10 : 0,
+                  transition: "all .2s ease",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = C.amberBorder)}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = showEx ? C.amberBorder : C.border)}
+                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = C.shadow; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = C.shadowSm; e.currentTarget.style.transform = "none"; }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, background: C.amberLight, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2" strokeLinecap="round">
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 12, background: `linear-gradient(135deg, ${C.amber} 0%, ${C.amberDark} 100%)`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 14px ${C.amber}50` }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
                       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                     </svg>
                   </div>
                   <div style={{ textAlign: "left" }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>5 exemples de marques réelles</div>
-                    <div style={{ fontSize: 12, color: C.muted }}>Études de cas illustrées</div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: C.text, letterSpacing: "-0.01em" }}>5 exemples de marques réelles</div>
+                    <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>Études de cas illustrées</div>
                   </div>
                 </div>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.muted} strokeWidth="2" style={{ transform: showEx ? "rotate(180deg)" : "none", transition: "transform .2s", flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.muted} strokeWidth="2.5" style={{ transform: showEx ? "rotate(180deg)" : "none", transition: "transform .25s ease", flexShrink: 0 }}>
                   <path d="m6 9 6 6 6-6" />
                 </svg>
               </button>
 
               {showEx && s.ex.map((ex, i) => (
-                <div key={i} style={{ ...card, marginBottom: 8, padding: "16px 18px" }}>
+                <div
+                  key={i}
+                  style={{ ...card, marginBottom: 10, padding: "18px 20px" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.boxShadow = C.shadow; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.boxShadow = C.shadowSm; e.currentTarget.style.transform = "none"; }}
+                >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 10, background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 20 }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 13, background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 22, border: `1.5px solid ${C.border}` }}>
                       {ex.e}
                     </div>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 5 }}>{ex.n}</div>
-                      <p style={{ fontSize: 13, color: C.sub, lineHeight: 1.7, margin: 0 }}>{ex.d}</p>
+                      <div style={{ fontSize: 15, fontWeight: 800, color: C.text, marginBottom: 6, letterSpacing: "-0.01em" }}>{ex.n}</div>
+                      <p style={{ fontSize: 13, color: C.sub, lineHeight: 1.75, margin: 0 }}>{ex.d}</p>
                     </div>
                   </div>
                 </div>
@@ -711,21 +763,22 @@ export default function CourseApp() {
             </div>
 
             {/* Prompt */}
-            <div style={{ marginBottom: 14 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: C.muted, marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.09em" }}>Prompt à utiliser</div>
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: C.muted, marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.1em" }}>Prompt à utiliser</div>
               <div style={{
-                background: "#12132A",
-                border: `1px solid rgba(255,255,255,0.06)`,
-                borderLeft: `3px solid ${C.primary}`,
-                borderRadius: 12,
-                padding: "14px 18px",
+                background: "linear-gradient(135deg, #0F0A1E 0%, #1A0A3E 100%)",
+                border: `1.5px solid rgba(139,92,246,0.25)`,
+                borderLeft: `4px solid ${C.p1}`,
+                borderRadius: 16,
+                padding: "18px 20px",
                 fontFamily: "'SF Mono', 'Fira Code', 'Consolas', monospace",
                 fontSize: 12.5,
-                color: "#C0C4FF",
-                lineHeight: 1.75,
+                color: "#C4B5FD",
+                lineHeight: 1.8,
                 whiteSpace: "pre-wrap",
                 wordBreak: "break-word",
-                marginBottom: 8,
+                marginBottom: 10,
+                boxShadow: `0 8px 32px ${C.p1}20`,
               }}>
                 {prompt}
               </div>
@@ -733,15 +786,18 @@ export default function CourseApp() {
                 onClick={copy}
                 style={{
                   ...btnBase,
-                  background: copied ? C.greenLight : C.primaryLight,
-                  color: copied ? C.greenDark : C.primary,
-                  border: `1px solid ${copied ? C.greenBorder : C.primaryBorder}`,
-                  padding: "10px 18px",
+                  background: copied ? C.greenGrad : C.pLight,
+                  color: copied ? "#fff" : C.p1,
+                  border: `1.5px solid ${copied ? "transparent" : C.pBorder}`,
+                  padding: "10px 20px",
                   fontSize: 13,
+                  boxShadow: copied ? "0 4px 16px #22C55E40" : "none",
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
                 {copied ? (
-                  <>{ICON_CHECK(C.greenDark, 13)} Copié !</>
+                  <>{ICON_CHECK("#fff", 13)} Copié !</>
                 ) : (
                   <>
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -754,21 +810,30 @@ export default function CourseApp() {
             </div>
 
             {/* Deliverables */}
-            <div style={{ ...card, padding: "16px 20px", marginBottom: 20 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: C.muted, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.09em" }}>Livrables de l'étape</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div
+              style={{ ...card, padding: "20px 22px", marginBottom: 22, background: `linear-gradient(135deg, ${C.white} 60%, ${C.greenLight}60 100%)` }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = C.shadow; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = C.shadowSm; e.currentTarget.style.transform = "none"; }}
+            >
+              <div style={{ fontSize: 11, fontWeight: 800, color: C.muted, marginBottom: 14, textTransform: "uppercase", letterSpacing: "0.1em" }}>Livrables de l'étape</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {dels.map((d, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{ width: 20, height: 20, borderRadius: "50%", background: C.greenLight, border: `1.5px solid ${C.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      {ICON_CHECK(C.greenDark, 9)}
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ width: 22, height: 22, borderRadius: "50%", background: C.greenGrad, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 3px 10px #22C55E40" }}>
+                      {ICON_CHECK("#fff", 10)}
                     </div>
-                    <span style={{ fontSize: 14, color: C.sub }}>{d}</span>
+                    <span style={{ fontSize: 14, color: C.sub, fontWeight: 500 }}>{d}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <button onClick={() => setPhase("outro")} style={btnGreen}>
+            <button
+              onClick={() => setPhase("outro")}
+              style={btnGreen}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.9"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "none"; }}
+            >
               Réflexion finale {ICON_ARROW}
             </button>
           </>
@@ -777,41 +842,46 @@ export default function CourseApp() {
 
       {/* ── INPUT BAR ── */}
       {(phase === "intro" || phase === "outro") && (
-        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(255,255,255,0.97)", backdropFilter: "blur(16px)", borderTop: `1px solid ${C.border}`, padding: "12px 20px 20px" }}>
-          <div style={{ maxWidth: 740, margin: "0 auto", display: "flex", gap: 10, alignItems: "flex-end" }}>
+        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(248,245,255,0.97)", backdropFilter: "blur(20px)", borderTop: `1.5px solid ${C.border}`, padding: "12px 20px 22px" }}>
+          <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", gap: 10, alignItems: "flex-end" }}>
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               rows={1}
-              placeholder={isIntro ? "Votre réponse..." : "Votre réflexion..."}
+              placeholder={isIntro ? "Ta réponse..." : "Ta réflexion..."}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
               style={{
                 flex: 1,
-                background: C.bg,
-                border: `1.5px solid ${input ? C.primaryBorder : C.border}`,
-                borderRadius: 14,
-                padding: "12px 16px",
+                background: C.white,
+                border: `2px solid ${input ? pColor + "60" : C.border}`,
+                borderRadius: 16,
+                padding: "13px 18px",
                 color: C.text,
                 fontSize: 14,
                 outline: "none",
                 resize: "none",
                 fontFamily: "system-ui,sans-serif",
                 lineHeight: 1.55,
-                transition: "border-color .15s",
+                transition: "border-color .2s, box-shadow .2s",
+                fontWeight: 500,
+                boxShadow: input ? `0 0 0 4px ${pColor}15` : "none",
               }}
-              onFocus={(e) => (e.target.style.borderColor = C.primaryBorder)}
-              onBlur={(e) => (e.target.style.borderColor = C.border)}
+              onFocus={(e) => { e.target.style.borderColor = pColor; e.target.style.boxShadow = `0 0 0 4px ${pColor}15`; }}
+              onBlur={(e) => { e.target.style.borderColor = C.border; e.target.style.boxShadow = "none"; }}
             />
             <button
               onClick={send}
               disabled={loading || !input.trim()}
               style={{
-                width: 44, height: 44, borderRadius: 12,
-                background: input.trim() && !loading ? C.primary : C.border,
+                width: 48, height: 48, borderRadius: 14,
+                background: input.trim() && !loading ? phaseGrad : C.border,
                 border: "none", cursor: input.trim() && !loading ? "pointer" : "default",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                flexShrink: 0, transition: "background .15s",
+                flexShrink: 0, transition: "all .2s",
+                boxShadow: input.trim() && !loading ? `0 6px 20px ${phaseColor}40` : "none",
               }}
+              onMouseEnter={(e) => { if (input.trim()) e.currentTarget.style.transform = "scale(1.05)"; }}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
               {ICON_SEND(input.trim() ? "#fff" : C.muted)}
             </button>
@@ -821,7 +891,7 @@ export default function CourseApp() {
 
       <style>{`
         @keyframes blink {
-          0%, 100% { opacity: 0.25; transform: scale(0.75); }
+          0%, 100% { opacity: 0.2; transform: scale(0.7); }
           50% { opacity: 1; transform: scale(1); }
         }
         textarea::placeholder { color: ${C.light}; }
@@ -829,7 +899,7 @@ export default function CourseApp() {
         * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 4px; }
       `}</style>
     </div>
   );
