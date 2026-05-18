@@ -161,33 +161,69 @@ const STEPS = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DESIGN TOKENS
+// DESIGN TOKENS — Dark / AI / Corporate
 // ─────────────────────────────────────────────────────────────────────────────
 
 const C = {
-  bg: "#F8F5FF",
-  white: "#FFFFFF",
-  p1: "#8B5CF6", p2: "#6D28D9",
-  grad: "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)",
-  pLight: "#EDE9FE", pBorder: "rgba(139,92,246,0.2)",
-  t1: "#0EA5E9", t2: "#0284C7",
-  tGrad: "linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)",
-  tLight: "#E0F2FE",
-  green: "#22C55E", greenLight: "#DCFCE7", greenDark: "#16A34A",
-  greenGrad: "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)",
-  amber: "#FBBF24", amberLight: "#FEF3C7", amberDark: "#D97706",
-  coral: "#F43F5E", coralLight: "#FFE4E6",
-  gold: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)",
-  text: "#0F0A1E", sub: "#374151", muted: "#6B7280", light: "#9CA3AF",
-  border: "#E9E4F9",
-  shadowSm: "0 2px 8px rgba(109,40,217,0.06)",
-  shadow:   "0 8px 32px rgba(109,40,217,0.12), 0 2px 8px rgba(0,0,0,0.06)",
-  shadowHover: "0 16px 48px rgba(109,40,217,0.18), 0 4px 12px rgba(0,0,0,0.08)",
-  shadowXl: "0 24px 64px rgba(109,40,217,0.22), 0 8px 24px rgba(0,0,0,0.10)",
-  glow: "0 0 40px rgba(139,92,246,0.4)",
-  spring: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-  springBounce: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-  springSnap: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+  // Backgrounds
+  bg:           "#08080F",
+  bgDeep:       "#050508",
+  surface:      "rgba(255,255,255,0.028)",
+  surfaceHi:    "rgba(255,255,255,0.048)",
+  surfaceSolid: "#0E0E1A",
+
+  // Borders — barely there
+  border:       "rgba(255,255,255,0.07)",
+  borderHi:     "rgba(255,255,255,0.13)",
+  borderAccent: "rgba(139,92,246,0.35)",
+  borderGreen:  "rgba(52,211,153,0.30)",
+
+  // Text hierarchy
+  text:    "#FFFFFF",
+  textB:   "rgba(255,255,255,0.88)",
+  textSec: "rgba(255,255,255,0.52)",
+  textMut: "rgba(255,255,255,0.28)",
+  textDim: "rgba(255,255,255,0.14)",
+
+  // Accent — single purple, restrained
+  acc:      "#A78BFA",
+  accDeep:  "#7C3AED",
+  accSoft:  "rgba(167,139,250,0.10)",
+  accGlow:  "rgba(167,139,250,0.18)",
+
+  // Case-study blue
+  blue:     "#60A5FA",
+  blueSoft: "rgba(96,165,250,0.10)",
+
+  // Success
+  green:     "#34D399",
+  greenSoft: "rgba(52,211,153,0.10)",
+  greenDeep: "#059669",
+
+  // Status
+  coral:    "#F87171",
+  amber:    "#FCD34D",
+
+  // Gradients
+  grad:      "linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%)",
+  tGrad:     "linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)",
+  greenGrad: "linear-gradient(135deg, #34D399 0%, #059669 100%)",
+
+  // Shadows — dark env, elevation via opacity rings
+  shadow:   "0 0 0 1px rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.55)",
+  shadowHi: "0 0 0 1px rgba(255,255,255,0.11), 0 16px 56px rgba(0,0,0,0.65)",
+  shadowAcc:"0 0 0 1px rgba(139,92,246,0.22), 0 8px 32px rgba(139,92,246,0.14)",
+
+  // Transitions
+  t1: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",   // smooth
+  t2: "cubic-bezier(0.34, 1.56, 0.64, 1)",       // bounce
+};
+
+// Glow colors by mode
+const GLOW = {
+  create:    "rgba(139,92,246,",
+  casestudy: "rgba(96,165,250,",
+  done:      "rgba(52,211,153,",
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -228,116 +264,135 @@ Phase : ${phase === "intro" ? "Première impression (ouverture)" : "Dernière im
 // ICONS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ICON_LAYERS = (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" />
-  </svg>
-);
-const ICON_SEND = (color = "#fff") => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="m22 2-7 20-4-9-9-4 20-7z" /><path d="M22 2 11 13" />
-  </svg>
-);
-const ICON_CHECK = (color = "#fff", size = 12) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="3" strokeLinecap="round">
-    <path d="M20 6 9 17l-5-5" />
-  </svg>
-);
-const ICON_ARROW = (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-    <path d="m9 18 6-6-6-6" />
-  </svg>
-);
-const ICON_BACK = (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-    <path d="m15 18-6-6 6-6" />
-  </svg>
-);
-const ICON_SPARK = (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z" />
-  </svg>
-);
-const ICON_CHAT = (color = "#fff") => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-  </svg>
-);
-const ICON_RETRY = (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" />
-  </svg>
-);
+const I = {
+  layers: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+    </svg>
+  ),
+  send: (c = "currentColor") => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m22 2-7 20-4-9-9-4 20-7z"/><path d="M22 2 11 13"/>
+    </svg>
+  ),
+  check: (c = "currentColor", s = 12) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2.5" strokeLinecap="round">
+      <path d="M20 6 9 17l-5-5"/>
+    </svg>
+  ),
+  chevRight: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="m9 18 6-6-6-6"/>
+    </svg>
+  ),
+  chevLeft: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="m15 18-6-6 6-6"/>
+    </svg>
+  ),
+  chevDown: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="m6 9 6 6 6-6"/>
+    </svg>
+  ),
+  chat: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  ),
+  copy: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+    </svg>
+  ),
+  book: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+    </svg>
+  ),
+  rotate: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+    </svg>
+  ),
+  spark: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/>
+    </svg>
+  ),
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
-// AMBIENT PARTICLES (landing + completion)
+// LIGHT LAYER — AI glow effect, top-center radial source
 // ─────────────────────────────────────────────────────────────────────────────
 
-const PARTICLE_CONFIGS = [
-  { x: 8,  y: 12, size: 220, dur: 9,  delay: 0,   color: "rgba(139,92,246,0.07)"  },
-  { x: 82, y: 8,  size: 170, dur: 13, delay: 2.5, color: "rgba(14,165,233,0.06)"  },
-  { x: 55, y: 75, size: 190, dur: 11, delay: 1,   color: "rgba(139,92,246,0.05)"  },
-  { x: 92, y: 60, size: 140, dur: 15, delay: 4,   color: "rgba(34,197,94,0.05)"   },
-  { x: 20, y: 80, size: 160, dur: 10, delay: 3,   color: "rgba(14,165,233,0.05)"  },
-  { x: 70, y: 30, size: 200, dur: 12, delay: 1.5, color: "rgba(139,92,246,0.06)"  },
-  { x: 35, y: 45, size: 130, dur: 14, delay: 5,   color: "rgba(251,191,36,0.04)"  },
-  { x: 5,  y: 55, size: 180, dur: 8,  delay: 2,   color: "rgba(139,92,246,0.04)"  },
-];
-
-function AmbientParticles() {
+function LightLayer({ color = "139,92,246", intensity = 0.16, animate = true }) {
   return (
-    <div style={{ position: "fixed", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
-      {PARTICLE_CONFIGS.map((p, i) => (
-        <div key={i} style={{
-          position: "absolute",
-          left: `${p.x}%`, top: `${p.y}%`,
-          width: p.size, height: p.size,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${p.color} 0%, transparent 70%)`,
-          animation: `particleFloat ${p.dur}s ${p.delay}s infinite ease-in-out`,
-          transform: "translate(-50%, -50%)",
-        }} />
-      ))}
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
+      {/* Primary beam — top center */}
+      <div style={{
+        position: "absolute", top: -100, left: "50%",
+        transform: "translateX(-50%)",
+        width: 900, height: 700,
+        background: `radial-gradient(ellipse at 50% 0%, rgba(${color},${intensity}) 0%, rgba(${color},0) 68%)`,
+        animation: animate ? "glowBreath 7s ease-in-out infinite" : "none",
+      }} />
+      {/* Secondary ambient — bottom corners */}
+      <div style={{
+        position: "absolute", bottom: -200, left: -200,
+        width: 600, height: 600,
+        background: `radial-gradient(circle, rgba(${color},0.04) 0%, transparent 70%)`,
+        animation: animate ? "glowBreath 11s 3s ease-in-out infinite" : "none",
+      }} />
+      <div style={{
+        position: "absolute", bottom: -200, right: -200,
+        width: 500, height: 500,
+        background: `radial-gradient(circle, rgba(${color},0.03) 0%, transparent 70%)`,
+        animation: animate ? "glowBreath 9s 1.5s ease-in-out infinite" : "none",
+      }} />
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SESSION STORAGE
+// NOISE OVERLAY — film grain, very subtle
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SESSION_KEY = "brandstudio_v2";
-
-function saveSession(data) {
-  try { localStorage.setItem(SESSION_KEY, JSON.stringify(data)); } catch {}
-}
-function loadSession() {
-  try { return JSON.parse(localStorage.getItem(SESSION_KEY) || "null"); } catch { return null; }
-}
-function clearSession() {
-  try { localStorage.removeItem(SESSION_KEY); } catch {}
+function NoiseOverlay() {
+  return (
+    <div style={{
+      position: "fixed", inset: 0, pointerEvents: "none", zIndex: 998,
+      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+      opacity: 0.028,
+      mixBlendMode: "screen",
+    }} />
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PRESS PHYSICS HANDLER
+// SESSION
 // ─────────────────────────────────────────────────────────────────────────────
 
-function pressPhysics(e) {
+const SK = "bs_v3";
+const saveS  = (d) => { try { localStorage.setItem(SK, JSON.stringify(d)); } catch {} };
+const loadS  = ()  => { try { return JSON.parse(localStorage.getItem(SK) || "null"); } catch { return null; } };
+const clearS = ()  => { try { localStorage.removeItem(SK); } catch {} };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PRESS PHYSICS
+// ─────────────────────────────────────────────────────────────────────────────
+
+function press(e) {
   const el = e.currentTarget;
   el.style.transform = "scale(0.96)";
-  el.style.transition = `transform 80ms ${C.springSnap}`;
+  el.style.transition = `transform 70ms ${C.t2}`;
   const up = () => {
-    el.style.transform = "scale(1.02)";
-    el.style.transition = `transform 80ms ${C.springBounce}`;
-    setTimeout(() => {
-      el.style.transform = "scale(1)";
-      el.style.transition = `all 220ms ${C.spring}`;
-    }, 80);
-    el.removeEventListener("mouseup", up);
-    el.removeEventListener("mouseleave", up);
+    el.style.transform = "scale(1.01)";
+    el.style.transition = `transform 80ms ${C.t2}`;
+    setTimeout(() => { el.style.transform = "scale(1)"; el.style.transition = `all 200ms ${C.t1}`; }, 80);
+    el.removeEventListener("mouseup", up); el.removeEventListener("mouseleave", up);
   };
-  el.addEventListener("mouseup", up);
-  el.addEventListener("mouseleave", up);
+  el.addEventListener("mouseup", up); el.addEventListener("mouseleave", up);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -345,397 +400,395 @@ function pressPhysics(e) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function CourseApp() {
-  const [mode,         setMode]         = useState(null);
-  const [brandInput,   setBrandInput]   = useState("");
-  const [brand,        setBrand]        = useState("");
-  const [step,         setStep]         = useState(0);
-  const [phase,        setPhase]        = useState("intro");
-  const [msgs,         setMsgs]         = useState([]);
-  const [input,        setInput]        = useState("");
-  const [loading,      setLoading]      = useState(false);
-  const [openDone,     setOpenDone]     = useState(false);
-  const [closeDone,    setCloseDone]    = useState(false);
-  const [done,         setDone]         = useState(new Set());
-  const [showEx,       setShowEx]       = useState(false);
-  const [copied,       setCopied]       = useState(false);
-  const [finished,     setFinished]     = useState(false);
-  const [streamText,   setStreamText]   = useState("");
-  const [isStreaming,  setIsStreaming]   = useState(false);
-  const [aiGlow,       setAiGlow]       = useState(false);
-  const [retryMsg,     setRetryMsg]     = useState(null);
-  const [hoveredMode,  setHoveredMode]  = useState(null);
-  const [savedSession, setSavedSession] = useState(null);
-  const [floodStep,    setFloodStep]    = useState(false);
-  const [midpoint,     setMidpoint]     = useState(false);
-  const [midpointDone, setMidpointDone] = useState(false);
-  const [progressDisp, setProgressDisp] = useState(0);
+  const [mode,        setMode]        = useState(null);
+  const [brandInput,  setBrandInput]  = useState("");
+  const [brand,       setBrand]       = useState("");
+  const [step,        setStep]        = useState(0);
+  const [phase,       setPhase]       = useState("intro");
+  const [msgs,        setMsgs]        = useState([]);
+  const [input,       setInput]       = useState("");
+  const [loading,     setLoading]     = useState(false);
+  const [openDone,    setOpenDone]    = useState(false);
+  const [closeDone,   setCloseDone]   = useState(false);
+  const [done,        setDone]        = useState(new Set());
+  const [showEx,      setShowEx]      = useState(false);
+  const [copied,      setCopied]      = useState(false);
+  const [finished,    setFinished]    = useState(false);
+  const [streamText,  setStreamText]  = useState("");
+  const [isStreaming, setIsStreaming]  = useState(false);
+  const [aiGlow,      setAiGlow]      = useState(false);
+  const [retryVal,    setRetryVal]    = useState(null);
+  const [saved,       setSaved]       = useState(null);
+  const [flooding,    setFlooding]    = useState(false);
+  const [midpoint,    setMidpoint]    = useState(false);
+  const [midDone,     setMidDone]     = useState(false);
+  const [progDisp,    setProgDisp]    = useState(0);
+  const [hovCard,     setHovCard]     = useState(null);
 
-  const endRef       = useRef(null);
-  const streamRef    = useRef(null);
-  const sessionStart = useRef(Date.now());
+  const endRef    = useRef(null);
+  const streamRef = useRef(null);
+  const t0Ref     = useRef(Date.now());
 
-  // ── Session: load on mount ──────────────────────────────────────
+  // Session: load
   useEffect(() => {
-    const s = loadSession();
-    if (s && (s.step > 0 || (s.done && s.done.length > 0))) {
-      setSavedSession(s);
-    }
+    const s = loadS();
+    if (s && (s.step > 0 || s.done?.length > 0)) setSaved(s);
   }, []);
 
-  // ── Session: save on state change ──────────────────────────────
+  // Session: save
   useEffect(() => {
     if (!mode) return;
-    saveSession({ mode, brand, step, phase, done: [...done], finished });
+    saveS({ mode, brand, step, phase, done: [...done], finished });
   }, [mode, brand, step, phase, done, finished]);
 
-  // ── Reset conversation when step/phase changes ──────────────────
+  // Reset conversation per step/phase
   useEffect(() => {
     if (streamRef.current) { clearInterval(streamRef.current); streamRef.current = null; }
     setStreamText(""); setIsStreaming(false);
     setMsgs([]); setInput("");
-    setOpenDone(false); setCloseDone(false); setShowEx(false);
-    setRetryMsg(null);
+    setOpenDone(false); setCloseDone(false); setShowEx(false); setRetryVal(null);
   }, [step, phase]);
 
-  // ── Scroll to latest message ────────────────────────────────────
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [msgs, loading, streamText]);
+  // Scroll to bottom
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs, loading, streamText]);
 
-  // ── Progress overshoot ──────────────────────────────────────────
+  // Progress overshoot
   useEffect(() => {
     const target = (done.size / STEPS.length) * 100;
-    if (target > progressDisp) {
-      const overshoot = Math.min(target + 4, 100);
-      setProgressDisp(overshoot);
-      setTimeout(() => setProgressDisp(target), 380);
+    if (target > progDisp) {
+      setProgDisp(Math.min(target + 3.5, 100));
+      setTimeout(() => setProgDisp(target), 420);
     }
   }, [done.size]);
 
-  // ── Midpoint dopamine hit (after completing step 4) ─────────────
+  // Midpoint
   useEffect(() => {
-    if (done.size === 4 && !midpointDone) {
-      setMidpoint(true); setMidpointDone(true);
-      setTimeout(() => setMidpoint(false), 3800);
-    }
+    if (done.size === 4 && !midDone) { setMidpoint(true); setMidDone(true); setTimeout(() => setMidpoint(false), 4000); }
   }, [done.size]);
 
-  // ── Cleanup on unmount ──────────────────────────────────────────
-  useEffect(() => {
-    return () => { if (streamRef.current) clearInterval(streamRef.current); };
-  }, []);
+  useEffect(() => { return () => { if (streamRef.current) clearInterval(streamRef.current); }; }, []);
 
-  // ── Streaming word-by-word renderer ────────────────────────────
+  // Word-by-word streaming
   const streamResponse = (text, glow = false) => {
     if (streamRef.current) clearInterval(streamRef.current);
-    setIsStreaming(true);
-    setStreamText("");
+    setIsStreaming(true); setStreamText("");
     if (glow) setAiGlow(true);
     const words = text.split(" ");
     let i = 0;
     streamRef.current = setInterval(() => {
       if (i >= words.length) {
-        clearInterval(streamRef.current);
-        streamRef.current = null;
-        setIsStreaming(false);
-        setStreamText("");
+        clearInterval(streamRef.current); streamRef.current = null;
+        setIsStreaming(false); setStreamText("");
         setMsgs((p) => [...p, { role: "assistant", content: text }]);
-        if (glow) setTimeout(() => setAiGlow(false), 2200);
+        if (glow) setTimeout(() => setAiGlow(false), 2500);
         return;
       }
       setStreamText((p) => (i === 0 ? "" : p + " ") + words[i]);
       i++;
-    }, 32);
+    }, 30);
   };
 
-  // ── Send message ────────────────────────────────────────────────
-  const send = async (overrideInput) => {
-    const val = (overrideInput ?? input).trim();
+  // Send
+  const send = async (override) => {
+    const val = (override ?? input).trim();
     if (!val || loading || isStreaming) return;
-    setInput("");
-    setRetryMsg(null);
-    const question = phase === "intro"
+    setInput(""); setRetryVal(null);
+    const q = phase === "intro"
       ? (mode === "casestudy" ? s.iQ_cs(brand) : s.iQ_cr)
       : (mode === "casestudy" ? s.oQ_cs(brand) : s.oQ_cr);
     const apiMsgs = [
       ...msgs.map((m) => ({ role: m.role, content: m.content })),
-      { role: "user", content: msgs.length === 0 ? `[Question: "${question}"]\nMa réponse: ${val}` : val },
+      { role: "user", content: msgs.length === 0 ? `[Question: "${q}"]\nMa réponse: ${val}` : val },
     ];
     setMsgs((p) => [...p, { role: "user", content: val }]);
     setLoading(true);
-    const t0 = Date.now();
+    const start = Date.now();
     try {
       const reply = await callTutor(apiMsgs, buildSystem(s.name, mode, brand, phase));
-      const elapsed = Date.now() - t0;
-      const minDelay = 900;
-      if (elapsed < minDelay) await new Promise((r) => setTimeout(r, minDelay - elapsed));
+      const wait = Math.max(0, 850 - (Date.now() - start));
+      if (wait > 0) await new Promise((r) => setTimeout(r, wait));
       if (phase === "intro") setOpenDone(true);
       if (phase === "outro") setCloseDone(true);
       setLoading(false);
       streamResponse(reply, Math.random() < 0.2);
     } catch {
       setLoading(false);
-      setRetryMsg(val);
+      setRetryVal(val);
       setMsgs((p) => [...p, { role: "assistant", content: "__error__" }]);
     }
   };
 
-  // ── Step complete with flood animation ──────────────────────────
+  // Next step with flood
   const nextStep = () => {
-    setFloodStep(true);
+    setFlooding(true);
     setTimeout(() => {
-      setFloodStep(false);
+      setFlooding(false);
       setDone((p) => new Set([...p, step]));
       if (step < STEPS.length - 1) { setStep(step + 1); setPhase("intro"); }
-      else { setFinished(true); }
-    }, 550);
+      else setFinished(true);
+    }, 520);
   };
 
   const copy = () => {
-    navigator.clipboard?.writeText(prompt).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+    navigator.clipboard?.writeText(prompt).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
   };
 
-  const resumeSession = () => {
-    if (!savedSession) return;
-    const s = savedSession;
-    setMode(s.mode); setBrand(s.brand || ""); setBrandInput(s.brand || "");
-    setStep(s.step || 0); setPhase(s.phase || "intro");
-    setDone(new Set(s.done || []));
-    if (s.finished) setFinished(true);
-    setSavedSession(null);
+  const resume = () => {
+    if (!saved) return;
+    setMode(saved.mode); setBrand(saved.brand || ""); setBrandInput(saved.brand || "");
+    setStep(saved.step || 0); setPhase(saved.phase || "intro");
+    setDone(new Set(saved.done || [])); if (saved.finished) setFinished(true);
+    setSaved(null);
   };
 
-  // ── Computed ────────────────────────────────────────────────────
-  const s         = STEPS[step];
-  const isIntro   = phase === "intro";
-  const isDone    = isIntro ? openDone : closeDone;
-  const prompt    = mode === "casestudy" ? s.p_cs(brand) : s.p_cr;
-  const dels      = mode === "casestudy" ? s.d_cs : s.d_cr;
-  const pGrad     = mode === "casestudy" ? C.tGrad : C.grad;
-  const pLight    = mode === "casestudy" ? C.tLight : C.pLight;
-  const pColor    = mode === "casestudy" ? C.t1 : C.p1;
-  const phaseGrad = isIntro ? pGrad : C.greenGrad;
-  const phaseColor = isIntro ? pColor : C.green;
+  // Computed
+  const s          = STEPS[step];
+  const isIntro    = phase === "intro";
+  const isDone     = isIntro ? openDone : closeDone;
+  const prompt     = mode === "casestudy" ? s.p_cs(brand) : s.p_cr;
+  const dels       = mode === "casestudy" ? s.d_cs : s.d_cr;
+  const isCS       = mode === "casestudy";
+  const pColor     = isCS ? C.blue     : C.acc;
+  const pSoft      = isCS ? C.blueSoft : C.accSoft;
+  const pGrad      = isCS ? C.tGrad    : C.grad;
+  const phaseColor = isIntro ? pColor   : C.green;
+  const phaseGrad  = isIntro ? pGrad    : C.greenGrad;
+  const glowStr    = isCS ? GLOW.casestudy : GLOW.create;
 
-  // ── Shared style objects ────────────────────────────────────────
+  // Shared styles
   const card = {
-    background: C.white, border: `1.5px solid ${C.border}`,
-    borderRadius: 20, boxShadow: C.shadowSm,
-    padding: "22px 26px", marginBottom: 14,
-    transition: `box-shadow 220ms ${C.spring}, transform 220ms ${C.spring}`,
+    background: C.surface,
+    border: `1px solid ${C.border}`,
+    borderRadius: 12,
+    padding: "20px 22px",
+    marginBottom: 10,
+    backdropFilter: "blur(20px)",
+    WebkitBackdropFilter: "blur(20px)",
+    transition: `all 180ms ${C.t1}`,
   };
+
   const btnBase = {
-    fontFamily: "system-ui,sans-serif", cursor: "pointer",
-    borderRadius: 14, fontSize: 14, fontWeight: 700,
-    padding: "13px 24px", border: "none",
-    display: "inline-flex", alignItems: "center", gap: 8,
-    transition: `all 220ms ${C.spring}`, letterSpacing: "-0.01em",
+    fontFamily: "system-ui,-apple-system,sans-serif",
+    cursor: "pointer", borderRadius: 8, fontSize: 13,
+    fontWeight: 500, padding: "9px 18px", border: "none",
+    display: "inline-flex", alignItems: "center", gap: 6,
+    transition: `all 180ms ${C.t1}`, letterSpacing: "-0.01em",
     userSelect: "none",
   };
-  const btnPrimary = { ...btnBase, background: pGrad, color: "#fff", boxShadow: `0 4px 16px ${pColor}40` };
-  const btnGreen   = { ...btnBase, background: C.greenGrad, color: "#fff", boxShadow: "0 4px 16px #22C55E40" };
-  const btnGhost   = { ...btnBase, background: C.pLight, color: C.p1, border: `1.5px solid ${C.pBorder}` };
 
-  const lift = (e) => {
-    e.currentTarget.style.transform = "translateY(-3px)";
-    e.currentTarget.style.boxShadow = C.shadowHover;
+  const btnPrimary = {
+    ...btnBase,
+    background: pColor, color: "#fff",
+    boxShadow: `0 0 0 1px ${pColor}55, 0 4px 16px ${pColor}30`,
   };
-  const drop = (e) => {
+  const btnGhost = {
+    ...btnBase,
+    background: C.surface, color: C.textB,
+    border: `1px solid ${C.border}`,
+  };
+  const btnGreen = {
+    ...btnBase,
+    background: C.green, color: "#000",
+    boxShadow: `0 0 0 1px ${C.green}55, 0 4px 16px ${C.green}25`,
+  };
+
+  const liftCard = (e) => {
+    e.currentTarget.style.background = C.surfaceHi;
+    e.currentTarget.style.border = `1px solid ${C.borderHi}`;
+    e.currentTarget.style.transform = "translateY(-1px)";
+  };
+  const dropCard = (e) => {
+    e.currentTarget.style.background = C.surface;
+    e.currentTarget.style.border = `1px solid ${C.border}`;
     e.currentTarget.style.transform = "";
-    e.currentTarget.style.boxShadow = C.shadowSm;
   };
 
-  // ─────────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────
   // LANDING
-  // ─────────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────
   if (!mode) return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 20px", fontFamily: "system-ui,sans-serif", position: "relative", overflow: "hidden" }}>
-      <AmbientParticles />
-      <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: 480, display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", fontFamily: "system-ui,-apple-system,sans-serif", position: "relative", overflow: "hidden" }}>
+      <LightLayer color="139,92,246" intensity={0.20} />
+      <NoiseOverlay />
 
-        {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 48 }}>
-          <div style={{ width: 44, height: 44, borderRadius: 14, background: C.grad, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 8px 28px ${C.p1}55`, animation: "breathe 3.6s ease-in-out infinite" }}>
-            {ICON_LAYERS}
+      <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: 460, display: "flex", flexDirection: "column", alignItems: "center" }}>
+
+        {/* Wordmark */}
+        <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 56, animation: "fadeUp 500ms both" }}>
+          <div style={{ width: 28, height: 28, borderRadius: 7, border: `1px solid ${C.borderHi}`, background: C.surface, display: "flex", alignItems: "center", justifyContent: "center", color: C.acc, backdropFilter: "blur(20px)" }}>
+            {I.layers}
           </div>
-          <span style={{ fontSize: 20, fontWeight: 900, color: C.text, letterSpacing: "-0.03em" }}>Brand Studio</span>
+          <span style={{ fontSize: 14, fontWeight: 600, color: C.textB, letterSpacing: "-0.02em" }}>Brand Studio</span>
+          <div style={{ height: 16, width: 1, background: C.border }} />
+          <span style={{ fontSize: 11, color: C.textMut, fontWeight: 500, letterSpacing: "0.02em" }}>v2.0</span>
         </div>
 
-        {/* Return state banner */}
-        {savedSession && (
+        {/* Return state */}
+        {saved && (
           <div
-            onClick={resumeSession}
-            style={{ width: "100%", background: C.white, border: `1.5px solid ${C.pBorder}`, borderRadius: 18, padding: "14px 20px", marginBottom: 20, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: C.shadowSm, transition: `all 220ms ${C.spring}`, animation: "slideUp 400ms both" }}
-            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = C.shadow; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = `${C.p1}50`; }}
-            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = C.shadowSm; e.currentTarget.style.transform = ""; e.currentTarget.style.borderColor = C.pBorder; }}
-            onMouseDown={pressPhysics}
+            onClick={resume}
+            onMouseDown={press}
+            style={{ width: "100%", background: C.surface, border: `1px solid ${C.borderAccent}`, borderRadius: 10, padding: "13px 16px", marginBottom: 28, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", transition: `all 180ms ${C.t1}`, animation: "fadeUp 400ms 60ms both" }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = C.surfaceHi; e.currentTarget.style.borderColor = C.acc; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = C.surface; e.currentTarget.style.borderColor = C.borderAccent; }}
           >
             <div>
-              <div style={{ fontSize: 10, fontWeight: 800, color: C.p1, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Session sauvegardée</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>
-                Continuer avec {savedSession.brand || "ta marque"} — étape {(savedSession.step || 0) + 1}/{STEPS.length}
+              <div style={{ fontSize: 10, fontWeight: 600, color: C.acc, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 3 }}>Session en cours</div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: C.textB }}>
+                Reprendre avec {saved.brand || "ta marque"} · étape {(saved.step || 0) + 1}/{STEPS.length}
               </div>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ height: 4, width: 60, background: C.border, borderRadius: 2, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${((savedSession.done?.length || 0) / STEPS.length) * 100}%`, background: C.greenGrad, borderRadius: 2 }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ height: 3, width: 52, background: C.border, borderRadius: 99, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${((saved.done?.length || 0) / STEPS.length) * 100}%`, background: C.green, borderRadius: 99 }} />
               </div>
-              {ICON_ARROW}
+              <span style={{ color: C.textMut }}>{I.chevRight}</span>
             </div>
           </div>
         )}
 
         {/* Headline */}
-        <div style={{ textAlign: "center", marginBottom: 44 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: C.pLight, borderRadius: 99, padding: "5px 14px", marginBottom: 18, fontSize: 12, fontWeight: 700, color: C.p1, letterSpacing: "0.02em", animation: "slideUp 350ms both" }}>
-            {ICON_SPARK} 8 étapes guidées par l'IA
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: C.accSoft, border: `1px solid ${C.borderAccent}`, borderRadius: 99, padding: "4px 12px", marginBottom: 20, animation: "fadeUp 450ms both" }}>
+            <span style={{ color: C.acc }}>{I.spark}</span>
+            <span style={{ fontSize: 11, fontWeight: 600, color: C.acc, letterSpacing: "0.02em" }}>Identité visuelle assistée par IA</span>
           </div>
-          <h1 style={{ fontSize: "clamp(28px, 6vw, 38px)", fontWeight: 900, color: C.text, margin: "0 0 14px", letterSpacing: "-0.04em", lineHeight: 1.15, animation: "slideUp 400ms 60ms both" }}>
-            {"Construis une identité".split(" ").map((w, i) => (
-              <span key={i} style={{ display: "inline-block", animation: `heroWord 500ms ${80 + i * 70}ms both` }}>{w}&nbsp;</span>
-            ))}
-            <br />
-            <span style={{ background: C.grad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-              {"visuelle qui marque".split(" ").map((w, i) => (
-                <span key={i} style={{ display: "inline-block", animation: `heroWord 500ms ${360 + i * 70}ms both` }}>{w}&nbsp;</span>
-              ))}
-            </span>
+
+          <h1 style={{ fontSize: "clamp(30px, 7vw, 44px)", fontWeight: 700, color: C.text, margin: "0 0 12px", letterSpacing: "-0.04em", lineHeight: 1.1, animation: "fadeUp 500ms 80ms both" }}>
+            Construis l'identité<br />
+            <span style={{ color: C.textSec }}>qui</span>{" "}
+            <span style={{ background: `linear-gradient(90deg, ${C.acc} 0%, ${C.blue} 100%)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>marque.</span>
           </h1>
-          <p style={{ fontSize: 15, color: C.muted, margin: 0, lineHeight: 1.7, animation: "slideUp 450ms 500ms both" }}>
-            Exemples de vraies marques · Prompts IA prêts · Coach interactif
+
+          <p style={{ fontSize: 14, color: C.textSec, margin: 0, lineHeight: 1.7, maxWidth: 340, marginLeft: "auto", marginRight: "auto", animation: "fadeUp 500ms 160ms both" }}>
+            8 étapes structurées · Exemples de marques globales<br />Prompts IA prêts à l'emploi
           </p>
         </div>
 
         {/* Mode cards */}
-        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12, animation: "slideUp 450ms 600ms both" }}>
+        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 8, animation: "fadeUp 500ms 220ms both" }}>
           {[
-            { id: "create", emoji: "✦", grad: C.grad,  glow: C.p1, title: "Créer ma marque",  desc: "Construis une identité visuelle de A à Z avec un coach à chaque étape.", badge: "Création" },
-            { id: "setup",  emoji: "◎", grad: C.tGrad, glow: C.t1, title: "Étude de cas",      desc: "Analyse une marque existante pour décoder ses choix créatifs en profondeur.", badge: "Analyse" },
+            { id: "create", label: "Créer ma marque",  sub: "Construis une identité visuelle de A à Z.",    tag: "Création",  gColor: C.acc,  tagBg: C.accSoft,  border: C.borderAccent },
+            { id: "setup",  label: "Étude de cas",      sub: "Analyse en profondeur une marque existante.", tag: "Analyse",   gColor: C.blue, tagBg: C.blueSoft, border: "rgba(96,165,250,0.30)" },
           ].map((opt) => {
-            const isDimmed = hoveredMode && hoveredMode !== opt.id;
+            const dim = hovCard && hovCard !== opt.id;
             return (
               <div
                 key={opt.id}
                 onClick={() => setMode(opt.id)}
-                onMouseEnter={() => setHoveredMode(opt.id)}
-                onMouseLeave={() => setHoveredMode(null)}
-                onMouseDown={pressPhysics}
+                onMouseEnter={() => setHovCard(opt.id)}
+                onMouseLeave={() => setHovCard(null)}
+                onMouseDown={press}
                 style={{
-                  background: C.white, border: `1.5px solid ${hoveredMode === opt.id ? opt.glow + "50" : C.border}`,
-                  borderRadius: 22, padding: "20px 22px", cursor: "pointer",
-                  display: "flex", alignItems: "center", gap: 18,
-                  boxShadow: hoveredMode === opt.id ? `0 12px 40px ${opt.glow}25` : C.shadowSm,
-                  transform: hoveredMode === opt.id ? "translateY(-3px)" : isDimmed ? "scale(0.99)" : "",
-                  opacity: isDimmed ? 0.6 : 1,
-                  filter: isDimmed ? "blur(0.5px)" : "none",
-                  transition: `all 220ms ${C.spring}`,
+                  background: hovCard === opt.id ? C.surfaceHi : C.surface,
+                  border: `1px solid ${hovCard === opt.id ? opt.border : C.border}`,
+                  borderRadius: 12, padding: "16px 18px", cursor: "pointer",
+                  display: "flex", alignItems: "center", gap: 16,
+                  backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+                  transition: `all 180ms ${C.t1}`,
+                  opacity: dim ? 0.45 : 1,
+                  transform: hovCard === opt.id ? "translateY(-1px)" : "",
+                  boxShadow: hovCard === opt.id ? `0 0 0 1px ${opt.gColor}22, 0 8px 28px rgba(0,0,0,0.4)` : "none",
                 }}
               >
-                <div style={{ width: 54, height: 54, borderRadius: 17, background: opt.grad, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 22, color: "#fff", boxShadow: `0 6px 20px ${opt.glow}45`, fontWeight: 700 }}>
-                  {opt.emoji}
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: opt.tagBg, border: `1px solid ${opt.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: opt.gColor }}>
+                  {I.layers}
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
-                    <span style={{ fontSize: 16, fontWeight: 800, color: C.text, letterSpacing: "-0.02em" }}>{opt.title}</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: "#fff", background: opt.grad, borderRadius: 8, padding: "2px 9px", letterSpacing: "0.05em", textTransform: "uppercase" }}>{opt.badge}</span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: C.textB, letterSpacing: "-0.02em" }}>{opt.label}</span>
+                    <span style={{ fontSize: 10, fontWeight: 600, color: opt.gColor, background: opt.tagBg, border: `1px solid ${opt.border}`, borderRadius: 4, padding: "1px 7px", letterSpacing: "0.04em", textTransform: "uppercase" }}>{opt.tag}</span>
                   </div>
-                  <p style={{ margin: 0, fontSize: 13, color: C.muted, lineHeight: 1.55 }}>{opt.desc}</p>
+                  <p style={{ margin: 0, fontSize: 12, color: C.textMut, lineHeight: 1.5 }}>{opt.sub}</p>
                 </div>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.light} strokeWidth="2" style={{ flexShrink: 0 }}>
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
+                <span style={{ color: C.textDim, flexShrink: 0 }}>{I.chevRight}</span>
               </div>
             );
           })}
         </div>
 
-        {/* Stats + social proof */}
-        <div style={{ marginTop: 44, display: "flex", flexDirection: "column", alignItems: "center", gap: 16, animation: "slideUp 450ms 750ms both" }}>
-          <div style={{ display: "flex", gap: 32, flexWrap: "wrap", justifyContent: "center" }}>
-            {[["40+", "exemples de marques"], ["8", "prompts IA"], ["100%", "gratuit"]].map(([n, l]) => (
+        {/* Footer stats */}
+        <div style={{ marginTop: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, animation: "fadeUp 500ms 320ms both" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+            {[["40+", "exemples réels"], ["8", "étapes guidées"], ["Free", "accès total"]].map(([n, l]) => (
               <div key={l} style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 20, fontWeight: 900, color: C.p1, letterSpacing: "-0.03em" }}>{n}</div>
-                <div style={{ fontSize: 11, color: C.muted, marginTop: 3 }}>{l}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: C.textB, letterSpacing: "-0.03em" }}>{n}</div>
+                <div style={{ fontSize: 10, color: C.textMut, marginTop: 2, letterSpacing: "0.01em" }}>{l}</div>
               </div>
             ))}
           </div>
-          <div style={{ fontSize: 12, color: C.light, display: "flex", alignItems: "center", gap: 6 }}>
-            <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.green, boxShadow: `0 0 6px ${C.green}` }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: C.textMut }}>
+            <div style={{ width: 5, height: 5, borderRadius: "50%", background: C.green, boxShadow: `0 0 6px ${C.green}` }} />
             1 247 identités créées cette semaine
           </div>
+          {saved && (
+            <button onClick={() => { clearS(); setSaved(null); }} style={{ background: "none", border: "none", color: C.textDim, fontSize: 11, cursor: "pointer", fontFamily: "inherit", marginTop: 4 }}>
+              Repartir de zéro
+            </button>
+          )}
         </div>
-
-        {savedSession && (
-          <button
-            onClick={() => { clearSession(); setSavedSession(null); }}
-            style={{ marginTop: 16, background: "none", border: "none", color: C.light, fontSize: 12, cursor: "pointer", fontFamily: "system-ui,sans-serif" }}
-          >
-            Repartir de zéro
-          </button>
-        )}
       </div>
+
+      <style>{CSS_ANIMATIONS}</style>
     </div>
   );
 
-  // ─────────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────
   // BRAND INPUT
-  // ─────────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────
   if (mode === "setup") return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 20px", fontFamily: "system-ui,sans-serif", position: "relative", overflow: "hidden" }}>
-      <AmbientParticles />
-      <div style={{ width: "100%", maxWidth: 440, position: "relative", zIndex: 1, animation: "slideUp 400ms both" }}>
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", fontFamily: "system-ui,-apple-system,sans-serif", position: "relative", overflow: "hidden" }}>
+      <LightLayer color="96,165,250" intensity={0.18} />
+      <NoiseOverlay />
+
+      <div style={{ width: "100%", maxWidth: 420, position: "relative", zIndex: 1, animation: "fadeUp 380ms both" }}>
         <button
           onClick={() => setMode(null)}
-          style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 13, fontWeight: 700, marginBottom: 36, padding: 0, fontFamily: "system-ui,sans-serif", display: "flex", alignItems: "center", gap: 6, transition: `color 150ms`, }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = C.text)}
-          onMouseLeave={(e) => (e.currentTarget.style.color = C.muted)}
+          style={{ background: "none", border: "none", color: C.textSec, cursor: "pointer", fontSize: 12, fontWeight: 500, marginBottom: 40, padding: 0, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 5, transition: `color 150ms` }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = C.textB)}
+          onMouseLeave={(e) => (e.currentTarget.style.color = C.textSec)}
         >
-          {ICON_BACK} Retour
+          {I.chevLeft} Retour
         </button>
 
-        <div style={{ width: 54, height: 54, borderRadius: 17, background: C.tGrad, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20, boxShadow: `0 8px 28px ${C.t1}45`, fontSize: 24 }}>◎</div>
-        <h2 style={{ fontSize: 28, fontWeight: 900, color: C.text, margin: "0 0 8px", letterSpacing: "-0.03em" }}>Quelle marque analyser ?</h2>
-        <p style={{ margin: "0 0 28px", fontSize: 14, color: C.muted, lineHeight: 1.65 }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: C.blueSoft, border: "1px solid rgba(96,165,250,0.30)", borderRadius: 99, padding: "3px 10px", marginBottom: 20, fontSize: 11, fontWeight: 600, color: C.blue, letterSpacing: "0.02em" }}>
+          {I.spark} Mode Analyse
+        </div>
+        <h2 style={{ fontSize: 26, fontWeight: 700, color: C.text, margin: "0 0 8px", letterSpacing: "-0.04em" }}>Quelle marque analyser ?</h2>
+        <p style={{ margin: "0 0 28px", fontSize: 13, color: C.textSec, lineHeight: 1.6 }}>
           Choisis une marque qui t'inspire — locale, nationale ou mondiale.
         </p>
 
         <input
           value={brandInput}
           onChange={(e) => setBrandInput(e.target.value)}
-          placeholder="ex: Apple, Patagonia, Jacquemus..."
+          placeholder="Apple, Patagonia, Jacquemus..."
           autoFocus
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && brandInput.trim()) { setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro"); }
-          }}
-          style={{ width: "100%", background: C.white, border: `2px solid ${C.border}`, borderRadius: 14, padding: "15px 18px", color: C.text, fontSize: 15, outline: "none", fontFamily: "system-ui,sans-serif", marginBottom: 12, boxSizing: "border-box", fontWeight: 500, transition: `border-color 150ms ${C.spring}, box-shadow 150ms ${C.spring}, transform 150ms ${C.spring}` }}
-          onFocus={(e) => { e.target.style.borderColor = C.t1; e.target.style.boxShadow = `0 0 0 4px ${C.t1}18`; e.target.style.transform = "translateY(-1px)"; }}
+          onKeyDown={(e) => { if (e.key === "Enter" && brandInput.trim()) { setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro"); } }}
+          style={{ width: "100%", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8, padding: "12px 14px", color: C.text, fontSize: 14, outline: "none", fontFamily: "inherit", marginBottom: 10, boxSizing: "border-box", fontWeight: 400, backdropFilter: "blur(20px)", transition: `border-color 150ms, box-shadow 150ms, transform 150ms ${C.t1}` }}
+          onFocus={(e) => { e.target.style.borderColor = C.blue; e.target.style.boxShadow = `0 0 0 3px rgba(96,165,250,0.12)`; e.target.style.transform = "translateY(-1px)"; }}
           onBlur={(e)  => { e.target.style.borderColor = C.border; e.target.style.boxShadow = "none"; e.target.style.transform = ""; }}
         />
 
         <button
           onClick={() => { if (brandInput.trim()) { setBrand(brandInput.trim()); setMode("casestudy"); setStep(0); setPhase("intro"); } }}
-          style={{ ...btnBase, background: C.tGrad, color: "#fff", width: "100%", justifyContent: "center", boxShadow: `0 6px 20px ${C.t1}40`, animation: "ctaPulse 4s 4s infinite ease-in-out" }}
-          onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 10px 32px ${C.t1}55`; }}
-          onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = `0 6px 20px ${C.t1}40`; }}
-          onMouseDown={pressPhysics}
+          style={{ ...btnBase, background: C.blue, color: "#fff", width: "100%", justifyContent: "center", boxShadow: `0 0 0 1px rgba(96,165,250,0.4), 0 4px 16px rgba(96,165,250,0.25)`, fontWeight: 500 }}
+          onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 0 0 1px rgba(96,165,250,0.5), 0 8px 24px rgba(96,165,250,0.30)`; }}
+          onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = `0 0 0 1px rgba(96,165,250,0.4), 0 4px 16px rgba(96,165,250,0.25)`; }}
+          onMouseDown={press}
         >
-          Analyser {brandInput || "cette marque"} {ICON_ARROW}
+          Analyser {brandInput || "cette marque"} {I.chevRight}
         </button>
 
         <div style={{ marginTop: 28 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>Suggestions populaires</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <div style={{ fontSize: 10, fontWeight: 600, color: C.textDim, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Suggestions</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {["Apple", "Nike", "Airbnb", "Patagonia", "Spotify", "Glossier"].map((b) => (
               <button
-                key={b}
-                onClick={() => setBrandInput(b)}
-                onMouseDown={pressPhysics}
-                style={{ background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 10, padding: "7px 16px", fontSize: 13, color: C.sub, cursor: "pointer", fontFamily: "system-ui,sans-serif", fontWeight: 600, transition: `all 150ms ${C.spring}` }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.t1; e.currentTarget.style.color = C.t1; e.currentTarget.style.background = C.tLight; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.sub; e.currentTarget.style.background = C.white; e.currentTarget.style.transform = ""; }}
+                key={b} onClick={() => setBrandInput(b)} onMouseDown={press}
+                style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 6, padding: "5px 12px", fontSize: 12, color: C.textSec, cursor: "pointer", fontFamily: "inherit", fontWeight: 500, transition: `all 150ms ${C.t1}`, backdropFilter: "blur(20px)" }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.blue; e.currentTarget.style.color = C.blue; e.currentTarget.style.background = C.blueSoft; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textSec; e.currentTarget.style.background = C.surface; }}
               >
                 {b}
               </button>
@@ -743,134 +796,121 @@ export default function CourseApp() {
           </div>
         </div>
       </div>
+      <style>{CSS_ANIMATIONS}</style>
     </div>
   );
 
-  // ─────────────────────────────────────────────────────────────────
-  // COMPLETION CEREMONY
-  // ─────────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────
+  // COMPLETION
+  // ──────────────────────────────────────────────────────────────
   if (finished) {
-    const durationMin = Math.round((Date.now() - sessionStart.current) / 60000);
+    const mins = Math.max(1, Math.round((Date.now() - t0Ref.current) / 60000));
     return (
-      <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 20px", fontFamily: "system-ui,sans-serif", position: "relative", overflow: "hidden" }}>
-        <AmbientParticles />
+      <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", fontFamily: "system-ui,-apple-system,sans-serif", position: "relative", overflow: "hidden" }}>
+        <LightLayer color="52,211,153" intensity={0.18} />
+        <NoiseOverlay />
 
         {/* Confetti */}
-        {["#8B5CF6","#0EA5E9","#22C55E","#FBBF24","#F43F5E","#6D28D9","#0284C7","#16A34A"].map((col, i) => (
-          <div key={i} style={{
-            position: "fixed", top: "-20px",
-            left: `${10 + i * 11}%`,
-            width: 8 + (i % 3) * 4, height: 8 + (i % 3) * 4,
-            borderRadius: i % 2 === 0 ? "50%" : 2,
-            background: col, opacity: 0,
-            animation: `confettiFall ${2.5 + (i % 3) * 0.8}s ${i * 0.15}s both`,
-            zIndex: 5, pointerEvents: "none",
-          }} />
+        {[C.acc, C.blue, C.green, "#FCD34D", C.coral, "#A78BFA", "#60A5FA", "#34D399"].map((col, i) => (
+          <div key={i} style={{ position: "fixed", top: -10, left: `${8 + i * 11.5}%`, width: 6 + (i % 3) * 3, height: 6 + (i % 3) * 3, borderRadius: i % 2 ? "50%" : 2, background: col, opacity: 0, animation: `confettiFall ${2.2 + (i % 3) * 0.7}s ${i * 0.12}s both`, pointerEvents: "none", zIndex: 10 }} />
         ))}
 
-        <div style={{ position: "relative", zIndex: 1, textAlign: "center", maxWidth: 520, width: "100%", animation: "slideUp 600ms both" }}>
+        <div style={{ position: "relative", zIndex: 1, textAlign: "center", maxWidth: 500, width: "100%", animation: "fadeUp 500ms both" }}>
 
-          {/* Badge */}
-          <div style={{ width: 88, height: 88, borderRadius: "50%", background: C.greenGrad, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 28px", boxShadow: `0 16px 48px ${C.green}50`, animation: "celebBadge 700ms ${C.springBounce} both" }}>
-            {ICON_CHECK("#fff", 36)}
+          <div style={{ width: 56, height: 56, borderRadius: "50%", background: C.greenSoft, border: `1px solid ${C.borderGreen}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px", color: C.green, animation: "scalePop 600ms 100ms both" }}>
+            {I.check(C.green, 22)}
           </div>
 
-          <h2 style={{ fontSize: "clamp(26px, 6vw, 40px)", fontWeight: 900, color: C.text, margin: "0 0 8px", letterSpacing: "-0.04em", lineHeight: 1.1 }}>
-            {mode === "casestudy"
-              ? <>{brand} <span style={{ background: C.tGrad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>décortiquée</span></>
-              : <>Identité <span style={{ background: C.grad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>complète</span></>
+          <h2 style={{ fontSize: "clamp(24px, 5vw, 36px)", fontWeight: 700, color: C.text, margin: "0 0 8px", letterSpacing: "-0.04em" }}>
+            {isCS
+              ? <><span style={{ color: C.textSec }}>{brand}</span> décortiquée</>
+              : <>Identité <span style={{ background: `linear-gradient(90deg, ${C.acc}, ${C.green})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>complète</span></>
             }
           </h2>
-          <p style={{ fontSize: 15, color: C.muted, margin: "0 0 36px", lineHeight: 1.7 }}>
+          <p style={{ fontSize: 13, color: C.textSec, margin: "0 0 36px", lineHeight: 1.6 }}>
             Tu vois maintenant les décisions derrière chaque choix visuel de marque.
           </p>
 
           {/* Stats */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 28, marginBottom: 36, flexWrap: "wrap" }}>
-            {[["8", "étapes"], [durationMin || "~7", "minutes"], ["100%", "complété"]].map(([n, l]) => (
-              <div key={l} style={{ textAlign: "center", background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 16, padding: "14px 22px", boxShadow: C.shadowSm }}>
-                <div style={{ fontSize: 24, fontWeight: 900, letterSpacing: "-0.04em", background: C.grad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{n}</div>
-                <div style={{ fontSize: 11, color: C.muted, marginTop: 3 }}>{l}</div>
+          <div style={{ display: "flex", justifyContent: "center", gap: 10, marginBottom: 28, flexWrap: "wrap" }}>
+            {[["8", "étapes"], [`${mins}`, "minutes"], ["100%", "complété"]].map(([n, l]) => (
+              <div key={l} style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 20px", backdropFilter: "blur(20px)", textAlign: "center" }}>
+                <div style={{ fontSize: 22, fontWeight: 700, color: C.text, letterSpacing: "-0.04em" }}>{n}</div>
+                <div style={{ fontSize: 10, color: C.textMut, marginTop: 2 }}>{l}</div>
               </div>
             ))}
           </div>
 
           {/* Step checklist */}
-          <div style={{ background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 20, padding: "20px 24px", marginBottom: 32, boxShadow: C.shadowSm, textAlign: "left" }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>8 piliers construits</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 16px" }}>
+          <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: "18px 20px", marginBottom: 28, backdropFilter: "blur(20px)", textAlign: "left" }}>
+            <div style={{ fontSize: 10, fontWeight: 600, color: C.textMut, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 14 }}>8 piliers définis</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px" }}>
               {STEPS.map((st, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <div style={{ width: 18, height: 18, borderRadius: "50%", background: C.greenGrad, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px #22C55E40" }}>
-                    {ICON_CHECK("#fff", 9)}
-                  </div>
-                  <span style={{ fontSize: 12, color: C.sub, fontWeight: 600 }}>{st.name}</span>
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                  <span style={{ color: C.green, flexShrink: 0 }}>{I.check(C.green, 10)}</span>
+                  <span style={{ fontSize: 11, color: C.textSec, fontWeight: 500 }}>{st.name}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
             <button
-              onClick={() => { clearSession(); setMode(null); setStep(0); setPhase("intro"); setDone(new Set()); setFinished(false); setBrand(""); setBrandInput(""); setProgressDisp(0); setMidpointDone(false); sessionStart.current = Date.now(); }}
-              style={btnPrimary}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 10px 32px ${pColor}50`; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = `0 4px 16px ${pColor}40`; }}
-              onMouseDown={pressPhysics}
+              onClick={() => { clearS(); setMode(null); setStep(0); setPhase("intro"); setDone(new Set()); setFinished(false); setBrand(""); setBrandInput(""); setProgDisp(0); setMidDone(false); t0Ref.current = Date.now(); }}
+              style={btnPrimary} onMouseDown={press}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = ""; }}
             >
-              Recommencer
+              Recommencer {I.chevRight}
             </button>
             <button
-              onClick={() => { setStep(0); setPhase("intro"); setDone(new Set()); setFinished(false); setProgressDisp(0); setMidpointDone(false); sessionStart.current = Date.now(); }}
-              style={btnGhost}
-              onMouseDown={pressPhysics}
+              onClick={() => { setStep(0); setPhase("intro"); setDone(new Set()); setFinished(false); setProgDisp(0); setMidDone(false); t0Ref.current = Date.now(); }}
+              style={btnGhost} onMouseDown={press}
             >
               Revoir depuis le début
             </button>
           </div>
         </div>
+        <style>{CSS_ANIMATIONS}</style>
       </div>
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────
-  // MAIN COURSE LOOP
-  // ─────────────────────────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────
+  // MAIN COURSE
+  // ──────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "system-ui,sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "system-ui,-apple-system,sans-serif", display: "flex", flexDirection: "column" }}>
+      <LightLayer color={isCS ? "96,165,250" : "139,92,246"} intensity={0.10} />
+      <NoiseOverlay />
 
-      {/* ── MIDPOINT TOAST ── */}
+      {/* Midpoint toast */}
       {midpoint && (
-        <div style={{
-          position: "fixed", bottom: 100, right: 20, zIndex: 100,
-          background: C.white, border: `1.5px solid ${C.amberDark}30`,
-          borderRadius: 16, padding: "14px 20px", boxShadow: C.shadowHover,
-          display: "flex", alignItems: "center", gap: 12,
-          animation: "toastIn 400ms both",
-          maxWidth: 280,
-        }}>
-          <div style={{ fontSize: 24 }}>🔥</div>
+        <div style={{ position: "fixed", bottom: 88, right: 20, zIndex: 100, background: C.surfaceSolid, border: `1px solid ${C.borderHi}`, borderRadius: 10, padding: "12px 16px", boxShadow: C.shadowHi, display: "flex", alignItems: "center", gap: 10, animation: "toastSlide 350ms both", maxWidth: 260, backdropFilter: "blur(24px)" }}>
+          <div style={{ width: 28, height: 28, borderRadius: "50%", background: `rgba(252,211,77,0.12)`, border: "1px solid rgba(252,211,77,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>⚡</div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 800, color: C.text }}>À mi-chemin !</div>
-            <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>4 piliers définis · Continue sur ta lancée</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: C.textB }}>Mi-parcours atteint</div>
+            <div style={{ fontSize: 11, color: C.textMut, marginTop: 2 }}>4 piliers définis · Continue</div>
           </div>
         </div>
       )}
 
       {/* ── HEADER ── */}
-      <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(248,245,255,0.96)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: `1.5px solid ${C.border}` }}>
-        <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 20px", display: "flex", alignItems: "center", gap: 14, height: 60 }}>
+      <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(8,8,15,0.88)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderBottom: `1px solid ${C.border}` }}>
+        <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 20px", display: "flex", alignItems: "center", gap: 12, height: 52 }}>
 
-          {/* Logo */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <div style={{ width: 30, height: 30, borderRadius: 9, background: C.grad, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 12px ${C.p1}50`, animation: "breathe 3.6s ease-in-out infinite" }}>
-              {ICON_LAYERS}
+          {/* Wordmark */}
+          <div style={{ display: "flex", alignItems: "center", gap: 7, flexShrink: 0 }}>
+            <div style={{ width: 22, height: 22, borderRadius: 5, border: `1px solid ${C.borderHi}`, background: C.surface, display: "flex", alignItems: "center", justifyContent: "center", color: C.acc }}>
+              {I.layers}
             </div>
-            <span style={{ fontSize: 14, fontWeight: 900, color: C.text, letterSpacing: "-0.02em" }}>Brand Studio</span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: C.textSec, letterSpacing: "-0.02em" }}>Brand Studio</span>
           </div>
 
+          <div style={{ width: 1, height: 16, background: C.border, flexShrink: 0 }} />
+
           {/* Stepper */}
-          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+          <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 0, overflow: "hidden" }}>
             {STEPS.map((st, i) => {
               const isComp = done.has(i);
               const isCurr = i === step;
@@ -878,25 +918,21 @@ export default function CourseApp() {
                 <div key={i} style={{ display: "flex", alignItems: "center" }}>
                   <div
                     onClick={() => { setStep(i); setPhase("intro"); }}
-                    title={st.hook}
+                    title={`${i + 1}. ${st.hook}`}
                     style={{
-                      width: 28, height: 28, borderRadius: "50%",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      background: isComp ? C.greenGrad : isCurr ? pGrad : C.white,
-                      border: `2px solid ${isComp ? C.green : isCurr ? pColor : C.border}`,
-                      color: isComp || isCurr ? "#fff" : C.light,
-                      fontSize: 11, fontWeight: 800, cursor: "pointer", flexShrink: 0,
-                      transition: `all 280ms ${C.spring}`,
-                      boxShadow: isCurr ? `0 4px 14px ${pColor}55, 0 0 0 4px ${pColor}15` : isComp ? "0 4px 14px #22C55E40" : "none",
-                      animation: isCurr ? "breathe 3.6s ease-in-out infinite" : "none",
-                      transform: isCurr ? "scale(1.1)" : "scale(1)",
+                      width: 24, height: 24, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                      background: isComp ? C.greenSoft : isCurr ? pSoft : "transparent",
+                      border: `1px solid ${isComp ? C.borderGreen : isCurr ? `${pColor}60` : C.border}`,
+                      color: isComp ? C.green : isCurr ? pColor : C.textMut,
+                      fontSize: 10, fontWeight: 600, cursor: "pointer", flexShrink: 0,
+                      transition: `all 220ms ${C.t1}`,
                     }}
                   >
-                    {isComp ? ICON_CHECK("#fff", 11) : i + 1}
+                    {isComp ? I.check(C.green, 9) : i + 1}
                   </div>
                   {i < STEPS.length - 1 && (
-                    <div style={{ width: 11, height: 2.5, background: C.border, borderRadius: 2, flexShrink: 0, overflow: "hidden", position: "relative" }}>
-                      <div style={{ position: "absolute", inset: 0, background: C.greenGrad, transform: `scaleX(${done.has(i) ? 1 : 0})`, transformOrigin: "left", transition: `transform 400ms ${C.spring}`, borderRadius: 2 }} />
+                    <div style={{ width: 10, height: 1, background: C.border, flexShrink: 0, position: "relative", overflow: "hidden" }}>
+                      <div style={{ position: "absolute", inset: 0, background: C.green, transform: `scaleX(${done.has(i) ? 1 : 0})`, transformOrigin: "left", transition: `transform 380ms ${C.t1}` }} />
                     </div>
                   )}
                 </div>
@@ -904,36 +940,33 @@ export default function CourseApp() {
             })}
           </div>
 
-          {/* Mode + brand badge */}
-          <div style={{ flexShrink: 0, fontSize: 11, fontWeight: 800, color: "#fff", background: pGrad, borderRadius: 10, padding: "5px 12px", letterSpacing: "0.02em", boxShadow: `0 4px 12px ${pColor}40`, maxWidth: 100, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            {mode === "casestudy" ? brand : "Création"}
+          {/* Badge */}
+          <div style={{ flexShrink: 0, fontSize: 11, fontWeight: 600, color: pColor, background: pSoft, border: `1px solid ${pColor}40`, borderRadius: 5, padding: "3px 10px", letterSpacing: "-0.01em", maxWidth: 90, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {isCS ? brand : "Création"}
           </div>
         </div>
 
         {/* Progress bar */}
-        <div style={{ height: 3, background: C.border, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${progressDisp}%`, background: C.greenGrad, transition: `width 380ms ${C.spring}`, borderRadius: "0 2px 2px 0", boxShadow: progressDisp > 0 ? "2px 0 8px #22C55E60" : "none" }} />
+        <div style={{ height: 1, background: C.border }}>
+          <div style={{ height: "100%", width: `${progDisp}%`, background: C.green, transition: `width 380ms ${C.t1}`, boxShadow: progDisp > 0 ? `0 0 6px ${C.green}` : "none" }} />
         </div>
       </div>
 
       {/* ── BODY ── */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "28px 20px 160px", maxWidth: 760, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+      <div style={{ flex: 1, overflowY: "auto", padding: "24px 20px 160px", maxWidth: 720, margin: "0 auto", width: "100%", boxSizing: "border-box", position: "relative", zIndex: 1 }}>
 
-        {/* Step header with flood animation */}
-        <div style={{ marginBottom: 24, position: "relative", overflow: "hidden", borderRadius: 16, padding: "18px 22px", background: C.white, border: `1.5px solid ${C.border}`, boxShadow: C.shadowSm }}>
-          {floodStep && (
-            <div style={{ position: "absolute", inset: 0, background: C.greenGrad, borderRadius: 16, transformOrigin: "left", animation: "floodIn 550ms both", zIndex: 1 }} />
+        {/* Step header */}
+        <div style={{ marginBottom: 20, position: "relative", overflow: "hidden" }}>
+          {/* Flood animation overlay */}
+          {flooding && (
+            <div style={{ position: "absolute", inset: 0, background: C.green, borderRadius: 10, animation: "floodFade 520ms both", pointerEvents: "none", zIndex: 2 }} />
           )}
-          <div style={{ position: "relative", zIndex: 2 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-              <span style={{ fontSize: 10, fontWeight: 800, color: "#fff", background: `linear-gradient(135deg, ${C.amber} 0%, ${C.amberDark} 100%)`, borderRadius: 8, padding: "3px 12px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                {s.tag}
-              </span>
-              <span style={{ fontSize: 12, color: C.muted, fontWeight: 600 }}>Étape {step + 1} / {STEPS.length}</span>
-              <span style={{ fontSize: 12, color: C.light, fontWeight: 600, marginLeft: "auto" }}>{s.hook}</span>
-            </div>
-            <h2 style={{ fontSize: 24, fontWeight: 900, color: floodStep ? "#fff" : C.text, margin: 0, letterSpacing: "-0.03em", transition: `color 200ms` }}>{s.name}</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+            <span style={{ fontSize: 9, fontWeight: 700, color: pColor, background: pSoft, border: `1px solid ${pColor}40`, borderRadius: 4, padding: "2px 8px", textTransform: "uppercase", letterSpacing: "0.08em" }}>{s.tag}</span>
+            <span style={{ fontSize: 11, color: C.textMut }}>Étape {step + 1} / {STEPS.length}</span>
+            <span style={{ fontSize: 11, color: C.textDim, marginLeft: "auto" }}>{s.hook}</span>
           </div>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: C.text, margin: 0, letterSpacing: "-0.03em" }}>{s.name}</h2>
         </div>
 
         {/* ── Q&A PHASES ── */}
@@ -941,50 +974,52 @@ export default function CourseApp() {
           <>
             {/* Question card */}
             <div
-              style={{ ...card, borderLeft: `4px solid ${phaseColor}`, background: `linear-gradient(135deg, ${C.white} 0%, ${pLight}55 100%)`, animation: "slideUp 350ms both" }}
-              onMouseEnter={lift} onMouseLeave={drop}
+              style={{ ...card, borderLeft: `2px solid ${phaseColor}40`, background: `rgba(255,255,255,0.022)`, animation: "fadeUp 300ms both" }}
+              onMouseEnter={liftCard} onMouseLeave={dropCard}
             >
-              <div style={{ fontSize: 10, fontWeight: 800, background: phaseGrad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
-                {isIntro ? "✦ Avant de commencer" : "✦ Pour aller plus loin"}
+              <div style={{ fontSize: 9, fontWeight: 700, color: phaseColor, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>
+                {isIntro ? "Avant de commencer" : "Pour aller plus loin"}
               </div>
-              <p style={{ fontSize: 15, color: C.text, margin: 0, lineHeight: 1.8, fontWeight: 500 }}>
+              <p style={{ fontSize: 14, color: C.textB, margin: 0, lineHeight: 1.75, fontWeight: 400 }}>
                 {phase === "intro"
-                  ? (mode === "casestudy" ? s.iQ_cs(brand) : s.iQ_cr)
-                  : (mode === "casestudy" ? s.oQ_cs(brand) : s.oQ_cr)}
+                  ? (isCS ? s.iQ_cs(brand) : s.iQ_cr)
+                  : (isCS ? s.oQ_cs(brand) : s.oQ_cr)}
               </p>
             </div>
 
             {/* Messages */}
             {msgs.map((m, i) => {
               const isErr = m.content === "__error__";
+              const isUser = m.role === "user";
               return (
-                <div key={i} style={{ marginBottom: 12, display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start", alignItems: "flex-end", gap: 10, animation: "slideUp 280ms both" }}>
-                  {m.role === "assistant" && (
-                    <div style={{ width: 30, height: 30, borderRadius: "50%", background: phaseGrad, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: `0 4px 12px ${phaseColor}40` }}>
-                      {ICON_CHAT()}
+                <div key={i} style={{ marginBottom: 8, display: "flex", justifyContent: isUser ? "flex-end" : "flex-start", alignItems: "flex-end", gap: 8, animation: "fadeUp 200ms both" }}>
+                  {!isUser && (
+                    <div style={{ width: 24, height: 24, borderRadius: "50%", background: pSoft, border: `1px solid ${pColor}35`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: pColor, boxShadow: aiGlow && i === msgs.length - 1 ? `0 0 16px ${pColor}40` : "none", transition: `box-shadow 400ms` }}>
+                      {I.chat}
                     </div>
                   )}
                   <div style={{
-                    maxWidth: "78%",
-                    background: isErr ? C.coralLight : m.role === "user" ? phaseGrad : C.white,
-                    border: `1.5px solid ${isErr ? C.coral + "40" : m.role === "user" ? "transparent" : C.border}`,
-                    borderRadius: m.role === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-                    padding: "13px 18px",
-                    boxShadow: m.role === "user" ? `0 6px 20px ${phaseColor}30` : aiGlow && i === msgs.length - 1 ? C.glow : C.shadowSm,
-                    transition: `box-shadow 300ms ${C.spring}`,
+                    maxWidth: "76%",
+                    background: isErr ? "rgba(248,113,113,0.08)" : isUser ? `rgba(${isCS ? "96,165,250" : "167,139,250"},0.12)` : C.surface,
+                    border: `1px solid ${isErr ? "rgba(248,113,113,0.2)" : isUser ? `${pColor}25` : C.border}`,
+                    borderRadius: isUser ? "12px 12px 3px 12px" : "12px 12px 12px 3px",
+                    padding: "11px 14px",
+                    backdropFilter: "blur(20px)",
+                    boxShadow: aiGlow && !isUser && i === msgs.length - 1 ? `0 0 0 1px ${pColor}22, 0 4px 20px ${pColor}12` : "none",
+                    transition: `box-shadow 400ms`,
                   }}>
                     {isErr ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <p style={{ fontSize: 13, color: C.coral, margin: 0 }}>Erreur réseau. Réessaye ?</p>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ fontSize: 12, color: C.coral }}>Erreur réseau.</span>
                         <button
-                          onClick={() => { setMsgs((p) => p.slice(0, -1)); if (retryMsg) send(retryMsg); }}
-                          style={{ background: "none", border: `1px solid ${C.coral}60`, borderRadius: 8, padding: "4px 10px", fontSize: 12, color: C.coral, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontFamily: "system-ui,sans-serif", flexShrink: 0 }}
+                          onClick={() => { setMsgs((p) => p.slice(0, -1)); if (retryVal) send(retryVal); }}
+                          style={{ background: "rgba(248,113,113,0.1)", border: "1px solid rgba(248,113,113,0.25)", borderRadius: 5, padding: "3px 8px", fontSize: 11, color: C.coral, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontFamily: "inherit", flexShrink: 0 }}
                         >
-                          {ICON_RETRY} Retry
+                          {I.rotate} Retry
                         </button>
                       </div>
                     ) : (
-                      <p style={{ fontSize: 14, color: m.role === "user" ? "#fff" : C.text, margin: 0, lineHeight: 1.75 }}>{m.content}</p>
+                      <p style={{ fontSize: 13, color: isUser ? C.textB : C.textSec, margin: 0, lineHeight: 1.7 }}>{m.content}</p>
                     )}
                   </div>
                 </div>
@@ -993,49 +1028,49 @@ export default function CourseApp() {
 
             {/* Streaming bubble */}
             {isStreaming && (
-              <div style={{ marginBottom: 12, display: "flex", justifyContent: "flex-start", alignItems: "flex-end", gap: 10, animation: "slideUp 200ms both" }}>
-                <div style={{ width: 30, height: 30, borderRadius: "50%", background: phaseGrad, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: aiGlow ? C.glow : `0 4px 12px ${phaseColor}40`, transition: `box-shadow 400ms` }}>
-                  {ICON_CHAT()}
+              <div style={{ marginBottom: 8, display: "flex", justifyContent: "flex-start", alignItems: "flex-end", gap: 8, animation: "fadeUp 150ms both" }}>
+                <div style={{ width: 24, height: 24, borderRadius: "50%", background: pSoft, border: `1px solid ${pColor}35`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: pColor, boxShadow: aiGlow ? `0 0 16px ${pColor}40` : "none", transition: `box-shadow 400ms` }}>
+                  {I.chat}
                 </div>
-                <div style={{ maxWidth: "78%", background: C.white, border: `1.5px solid ${C.border}`, borderRadius: "18px 18px 18px 4px", padding: "13px 18px", boxShadow: aiGlow ? C.glow : C.shadowSm, transition: `box-shadow 400ms` }}>
-                  <p style={{ fontSize: 14, color: C.text, margin: 0, lineHeight: 1.75 }}>
+                <div style={{ maxWidth: "76%", background: C.surface, border: `1px solid ${C.border}`, borderRadius: "12px 12px 12px 3px", padding: "11px 14px", backdropFilter: "blur(20px)", boxShadow: aiGlow ? `0 0 0 1px ${pColor}22, 0 4px 20px ${pColor}12` : "none", transition: `box-shadow 400ms` }}>
+                  <p style={{ fontSize: 13, color: C.textSec, margin: 0, lineHeight: 1.7 }}>
                     {streamText}
-                    <span style={{ display: "inline-block", width: 2, height: 13, background: phaseColor, marginLeft: 2, verticalAlign: "text-bottom", animation: "cursorBlink 800ms infinite" }} />
+                    <span style={{ display: "inline-block", width: 1.5, height: 12, background: pColor, marginLeft: 2, verticalAlign: "text-bottom", animation: "cursorBlink 800ms infinite", opacity: 0.8 }} />
                   </p>
                 </div>
               </div>
             )}
 
-            {/* Loading — typing indicator */}
+            {/* Typing indicator */}
             {loading && !isStreaming && (
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 10, marginBottom: 12, animation: "slideUp 200ms both" }}>
-                <div style={{ width: 30, height: 30, borderRadius: "50%", background: phaseGrad, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  {ICON_CHAT()}
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginBottom: 8, animation: "fadeUp 150ms both" }}>
+                <div style={{ width: 24, height: 24, borderRadius: "50%", background: pSoft, border: `1px solid ${pColor}35`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: pColor }}>
+                  {I.chat}
                 </div>
-                <div style={{ background: C.white, border: `1.5px solid ${C.border}`, borderRadius: "18px 18px 18px 4px", padding: "14px 20px", display: "flex", gap: 5, boxShadow: C.shadowSm }}>
+                <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: "12px 12px 12px 3px", padding: "13px 16px", display: "flex", gap: 4, backdropFilter: "blur(20px)" }}>
                   {[0, 1, 2].map((i) => (
-                    <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: phaseColor, animation: `blink 1.2s ${i * 0.22}s infinite` }} />
+                    <div key={i} style={{ width: 4, height: 4, borderRadius: "50%", background: pColor, opacity: 0.5, animation: `dotBlink 1.1s ${i * 0.18}s infinite` }} />
                   ))}
                 </div>
               </div>
             )}
             <div ref={endRef} />
 
-            {/* Continue button */}
+            {/* Continue CTA */}
             {isDone && !loading && !isStreaming && (
               <button
                 onClick={isIntro ? () => setPhase("content") : nextStep}
-                style={{ ...btnPrimary, marginTop: 10, animation: "slideUp 300ms both" }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 10px 32px ${pColor}50`; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = `0 4px 16px ${pColor}40`; }}
-                onMouseDown={pressPhysics}
+                style={{ ...btnPrimary, marginTop: 8, animation: "fadeUp 250ms both" }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = `0 0 0 1px ${pColor}66, 0 8px 24px ${pColor}35`; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = `0 0 0 1px ${pColor}55, 0 4px 16px ${pColor}30`; }}
+                onMouseDown={press}
               >
                 {isIntro
                   ? "Voir le cours"
                   : step < STEPS.length - 1
-                    ? `Étape suivante : ${STEPS[step + 1].hook}`
-                    : "Terminer le cours ✦"}
-                {ICON_ARROW}
+                    ? `Étape ${step + 2} · ${STEPS[step + 1].hook}`
+                    : "Terminer"}
+                {I.chevRight}
               </button>
             )}
           </>
@@ -1044,96 +1079,81 @@ export default function CourseApp() {
         {/* ── CONTENT PHASE ── */}
         {phase === "content" && (
           <>
-            <div
-              style={{ ...card, background: `linear-gradient(135deg, ${C.white} 60%, ${pLight}70 100%)`, animation: "slideUp 300ms both" }}
-              onMouseEnter={lift} onMouseLeave={drop}
-            >
-              <p style={{ fontSize: 15, color: C.text, margin: 0, lineHeight: 1.85, fontWeight: 500 }}>{s.intro}</p>
+            {/* Intro */}
+            <div style={{ ...card, animation: "fadeUp 280ms both" }} onMouseEnter={liftCard} onMouseLeave={dropCard}>
+              <p style={{ fontSize: 13, color: C.textSec, margin: 0, lineHeight: 1.8 }}>{s.intro}</p>
             </div>
 
             {/* Examples accordion */}
-            <div style={{ marginBottom: 14, animation: "slideUp 350ms 60ms both" }}>
+            <div style={{ marginBottom: 10, animation: "fadeUp 300ms 60ms both" }}>
               <button
                 onClick={() => setShowEx(!showEx)}
-                style={{ width: "100%", background: showEx ? `linear-gradient(135deg, ${C.white} 60%, ${C.amberLight} 100%)` : C.white, border: `1.5px solid ${showEx ? C.amber + "60" : C.border}`, borderRadius: 20, padding: "16px 20px", cursor: "pointer", fontFamily: "system-ui,sans-serif", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: C.shadowSm, marginBottom: showEx ? 10 : 0, transition: `all 220ms ${C.spring}` }}
-                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = C.shadow; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = C.shadowSm; e.currentTarget.style.transform = ""; }}
-                onMouseDown={pressPhysics}
+                style={{ width: "100%", background: C.surface, border: `1px solid ${showEx ? C.borderHi : C.border}`, borderRadius: 10, padding: "13px 16px", cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: showEx ? 6 : 0, transition: `all 180ms ${C.t1}`, backdropFilter: "blur(20px)" }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = C.surfaceHi; e.currentTarget.style.borderColor = C.borderHi; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = C.surface; e.currentTarget.style.borderColor = showEx ? C.borderHi : C.border; }}
+                onMouseDown={press}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: 13, background: `linear-gradient(135deg, ${C.amber} 0%, ${C.amberDark} 100%)`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 14px ${C.amber}50`, flexShrink: 0 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
-                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                    </svg>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 6, background: "rgba(252,211,77,0.08)", border: "1px solid rgba(252,211,77,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: C.amber }}>
+                    {I.book}
                   </div>
                   <div style={{ textAlign: "left" }}>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: C.text, letterSpacing: "-0.01em" }}>5 exemples de marques réelles</div>
-                    <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{showEx ? "Masquer les exemples" : "Voir les études de cas"}</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: C.textB, letterSpacing: "-0.01em" }}>5 exemples de marques réelles</div>
+                    <div style={{ fontSize: 11, color: C.textMut, marginTop: 1 }}>{showEx ? "Masquer" : "Voir les études de cas"}</div>
                   </div>
                 </div>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.muted} strokeWidth="2.5" style={{ transform: showEx ? "rotate(180deg)" : "none", transition: `transform 250ms ${C.spring}`, flexShrink: 0 }}>
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
+                <span style={{ color: C.textMut, transform: showEx ? "rotate(180deg)" : "", transition: `transform 220ms ${C.t1}`, display: "flex" }}>{I.chevDown}</span>
               </button>
 
               {showEx && s.ex.map((ex, i) => (
                 <div
                   key={i}
-                  style={{ ...card, marginBottom: 10, padding: "18px 20px", animation: `slideUp 250ms ${i * 50}ms both` }}
-                  onMouseEnter={lift} onMouseLeave={drop}
+                  style={{ ...card, marginBottom: 6, padding: "14px 16px", animation: `fadeUp 200ms ${i * 40}ms both` }}
+                  onMouseEnter={liftCard} onMouseLeave={dropCard}
                 >
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-                    <div style={{ width: 46, height: 46, borderRadius: 14, background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 22, border: `1.5px solid ${C.border}` }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 8, background: C.surface, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 18 }}>
                       {ex.e}
                     </div>
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 800, color: C.text, marginBottom: 6, letterSpacing: "-0.01em" }}>{ex.n}</div>
-                      <p style={{ fontSize: 13, color: C.sub, lineHeight: 1.75, margin: 0 }}>{ex.d}</p>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: C.textB, marginBottom: 5, letterSpacing: "-0.01em" }}>{ex.n}</div>
+                      <p style={{ fontSize: 12, color: C.textSec, lineHeight: 1.7, margin: 0 }}>{ex.d}</p>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* AI Prompt block */}
-            <div style={{ marginBottom: 16, animation: "slideUp 350ms 120ms both" }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: C.muted, marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.1em" }}>Prompt à utiliser</div>
-              <div style={{ background: "linear-gradient(135deg, #0F0A1E 0%, #1A0A3E 100%)", border: `1.5px solid rgba(139,92,246,0.25)`, borderLeft: `4px solid ${C.p1}`, borderRadius: 16, padding: "18px 20px", fontFamily: "'SF Mono','Fira Code','Consolas',monospace", fontSize: 12.5, color: "#C4B5FD", lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-word", marginBottom: 10, boxShadow: `0 8px 32px ${C.p1}20` }}>
+            {/* Prompt */}
+            <div style={{ marginBottom: 10, animation: "fadeUp 300ms 120ms both" }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: C.textMut, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.1em" }}>Prompt IA</div>
+              <div style={{ background: "#050508", border: `1px solid ${C.border}`, borderLeft: `2px solid ${C.acc}40`, borderRadius: 10, padding: "16px 18px", fontFamily: "'SF Mono','Fira Code','Consolas',monospace", fontSize: 12, color: "rgba(167,139,250,0.75)", lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-word", marginBottom: 8 }}>
                 {prompt}
               </div>
               <button
                 onClick={copy}
-                style={{ ...btnBase, background: copied ? C.greenGrad : C.pLight, color: copied ? "#fff" : C.p1, border: `1.5px solid ${copied ? "transparent" : C.pBorder}`, padding: "10px 20px", fontSize: 13, boxShadow: copied ? "0 4px 16px #22C55E40" : "none", transition: `all 200ms ${C.spring}` }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = ""; }}
-                onMouseDown={pressPhysics}
+                style={{ ...btnGhost, padding: "7px 14px", fontSize: 12, background: copied ? C.greenSoft : C.surface, borderColor: copied ? C.borderGreen : C.border, color: copied ? C.green : C.textSec }}
+                onMouseEnter={(e) => { if (!copied) { e.currentTarget.style.borderColor = C.borderHi; e.currentTarget.style.color = C.textB; } }}
+                onMouseLeave={(e) => { if (!copied) { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textSec; } }}
+                onMouseDown={press}
               >
-                {copied ? (
-                  <>{ICON_CHECK("#fff", 13)} Copié !</>
-                ) : (
-                  <>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                      <rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                    </svg>
-                    Copier le prompt
-                  </>
-                )}
+                {copied ? <>{I.check(C.green, 11)} Copié</> : <>{I.copy} Copier le prompt</>}
               </button>
             </div>
 
             {/* Deliverables */}
             <div
-              style={{ ...card, padding: "20px 22px", marginBottom: 22, background: `linear-gradient(135deg, ${C.white} 60%, ${C.greenLight}50 100%)`, animation: "slideUp 350ms 180ms both" }}
-              onMouseEnter={lift} onMouseLeave={drop}
+              style={{ ...card, padding: "16px 18px", marginBottom: 20, animation: "fadeUp 300ms 180ms both" }}
+              onMouseEnter={liftCard} onMouseLeave={dropCard}
             >
-              <div style={{ fontSize: 11, fontWeight: 800, color: C.muted, marginBottom: 14, textTransform: "uppercase", letterSpacing: "0.1em" }}>Livrables de l'étape</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: C.textMut, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.1em" }}>Livrables</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
                 {dels.map((d, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, animation: `slideUp 250ms ${i * 60}ms both` }}>
-                    <div style={{ width: 22, height: 22, borderRadius: "50%", background: C.greenGrad, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 3px 10px #22C55E40" }}>
-                      {ICON_CHECK("#fff", 10)}
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                    <div style={{ width: 16, height: 16, borderRadius: "50%", background: C.greenSoft, border: `1px solid ${C.borderGreen}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: C.green }}>
+                      {I.check(C.green, 8)}
                     </div>
-                    <span style={{ fontSize: 14, color: C.sub, fontWeight: 500 }}>{d}</span>
+                    <span style={{ fontSize: 12, color: C.textSec, fontWeight: 400 }}>{d}</span>
                   </div>
                 ))}
               </div>
@@ -1141,12 +1161,12 @@ export default function CourseApp() {
 
             <button
               onClick={() => setPhase("outro")}
-              style={{ ...btnGreen, animation: "slideUp 350ms 240ms both" }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 32px #22C55E50"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 4px 16px #22C55E40"; }}
-              onMouseDown={pressPhysics}
+              style={{ ...btnGhost, animation: "fadeUp 300ms 240ms both" }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.borderHi; e.currentTarget.style.color = C.textB; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textSec; }}
+              onMouseDown={press}
             >
-              Réflexion finale {ICON_ARROW}
+              Réflexion finale {I.chevRight}
             </button>
           </>
         )}
@@ -1154,88 +1174,81 @@ export default function CourseApp() {
 
       {/* ── INPUT BAR ── */}
       {(phase === "intro" || phase === "outro") && (
-        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(248,245,255,0.97)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderTop: `1.5px solid ${C.border}`, padding: "12px 20px 24px" }}>
-          <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", gap: 10, alignItems: "flex-end" }}>
+        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(8,8,15,0.92)", backdropFilter: "blur(28px)", WebkitBackdropFilter: "blur(28px)", borderTop: `1px solid ${C.border}`, padding: "10px 20px 20px", zIndex: 40 }}>
+          <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", gap: 8, alignItems: "flex-end" }}>
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               rows={1}
               placeholder={isIntro ? "Ta réponse..." : "Ta réflexion finale..."}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-              style={{ flex: 1, background: C.white, border: `2px solid ${input ? pColor + "60" : C.border}`, borderRadius: 16, padding: "13px 18px", color: C.text, fontSize: 14, outline: "none", resize: "none", fontFamily: "system-ui,sans-serif", lineHeight: 1.55, transition: `border-color 150ms ${C.spring}, box-shadow 150ms ${C.spring}, transform 150ms ${C.spring}`, fontWeight: 500, boxShadow: input ? `0 0 0 4px ${pColor}15` : "none" }}
-              onFocus={(e) => { e.target.style.borderColor = pColor; e.target.style.boxShadow = `0 0 0 4px ${pColor}15`; e.target.style.transform = "translateY(-1px)"; }}
-              onBlur={(e)  => { e.target.style.borderColor = input ? pColor + "60" : C.border; e.target.style.boxShadow = input ? `0 0 0 4px ${pColor}15` : "none"; e.target.style.transform = ""; }}
+              style={{ flex: 1, background: C.surface, border: `1px solid ${input ? `${pColor}40` : C.border}`, borderRadius: 8, padding: "11px 14px", color: C.text, fontSize: 13, outline: "none", resize: "none", fontFamily: "inherit", lineHeight: 1.55, transition: `border-color 150ms, box-shadow 150ms, transform 150ms ${C.t1}`, fontWeight: 400, boxShadow: input ? `0 0 0 3px ${pColor}12` : "none", backdropFilter: "blur(20px)" }}
+              onFocus={(e) => { e.target.style.borderColor = `${pColor}60`; e.target.style.boxShadow = `0 0 0 3px ${pColor}12`; e.target.style.transform = "translateY(-1px)"; }}
+              onBlur={(e)  => { e.target.style.borderColor = input ? `${pColor}40` : C.border; e.target.style.boxShadow = input ? `0 0 0 3px ${pColor}12` : "none"; e.target.style.transform = ""; }}
             />
             <button
               onClick={() => send()}
               disabled={loading || isStreaming || !input.trim()}
-              style={{ width: 48, height: 48, borderRadius: 14, background: input.trim() && !loading && !isStreaming ? phaseGrad : C.border, border: "none", cursor: input.trim() && !loading && !isStreaming ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: `all 200ms ${C.spring}`, boxShadow: input.trim() && !loading && !isStreaming ? `0 6px 20px ${phaseColor}40` : "none" }}
-              onMouseEnter={(e) => { if (input.trim() && !loading) { e.currentTarget.style.transform = "scale(1.06) translateY(-1px)"; e.currentTarget.style.boxShadow = `0 10px 28px ${phaseColor}50`; } }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = input.trim() && !loading ? `0 6px 20px ${phaseColor}40` : "none"; }}
-              onMouseDown={pressPhysics}
+              style={{ width: 40, height: 40, borderRadius: 8, background: input.trim() && !loading && !isStreaming ? pColor : C.surface, border: `1px solid ${input.trim() && !loading && !isStreaming ? `${pColor}60` : C.border}`, cursor: input.trim() && !loading && !isStreaming ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: `all 180ms ${C.t1}`, color: input.trim() && !loading && !isStreaming ? "#fff" : C.textDim }}
+              onMouseEnter={(e) => { if (input.trim() && !loading) { e.currentTarget.style.transform = "scale(1.05) translateY(-1px)"; } }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = ""; }}
+              onMouseDown={press}
             >
-              {ICON_SEND(input.trim() && !loading && !isStreaming ? "#fff" : C.muted)}
+              {I.send(input.trim() && !loading && !isStreaming ? "#fff" : C.textDim)}
             </button>
           </div>
         </div>
       )}
 
-      {/* ── CSS ANIMATIONS ── */}
-      <style>{`
-        @keyframes breathe {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.005); }
-        }
-        @keyframes blink {
-          0%, 100% { opacity: 0.2; transform: scale(0.7); }
-          50% { opacity: 1; transform: scale(1.1); }
-        }
-        @keyframes cursorBlink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(14px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes heroWord {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes floodIn {
-          from { opacity: 0.9; clip-path: inset(0 100% 0 0); }
-          to { opacity: 0; clip-path: inset(0 0% 0 0); }
-        }
-        @keyframes particleFloat {
-          0%, 100% { transform: translate(-50%, -50%) scale(1); }
-          33% { transform: translate(-50%, -56%) scale(1.06); }
-          66% { transform: translate(-50%, -46%) scale(0.95); }
-        }
-        @keyframes toastIn {
-          from { opacity: 0; transform: translateX(40px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes ctaPulse {
-          0%, 100% { box-shadow: 0 6px 20px rgba(14,165,233,0.4); }
-          50% { box-shadow: 0 6px 32px rgba(14,165,233,0.7), 0 0 0 8px rgba(14,165,233,0.1); }
-        }
-        @keyframes confettiFall {
-          0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
-          80% { opacity: 0.8; }
-          100% { opacity: 0; transform: translateY(90vh) rotate(540deg) scale(0.5); }
-        }
-        @keyframes celebBadge {
-          from { opacity: 0; transform: scale(0.4); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        textarea::placeholder { color: ${C.light}; }
-        input::placeholder { color: ${C.light}; }
-        * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: ${C.p1}50; }
-      `}</style>
+      <style>{CSS_ANIMATIONS}</style>
     </div>
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CSS
+// ─────────────────────────────────────────────────────────────────────────────
+
+const CSS_ANIMATIONS = `
+  @keyframes glowBreath {
+    0%, 100% { opacity: 0.75; transform: scale(1); }
+    50%       { opacity: 1;    transform: scale(1.06); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scalePop {
+    from { opacity: 0; transform: scale(0.5); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes floodFade {
+    0%   { opacity: 0.6; clip-path: inset(0 100% 0 0 round 10px); }
+    60%  { opacity: 0.3; clip-path: inset(0 0%   0 0 round 10px); }
+    100% { opacity: 0;   clip-path: inset(0 0%   0 0 round 10px); }
+  }
+  @keyframes toastSlide {
+    from { opacity: 0; transform: translateX(32px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes confettiFall {
+    0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(88vh) rotate(480deg); }
+  }
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 0.8; }
+    50%       { opacity: 0; }
+  }
+  @keyframes dotBlink {
+    0%, 100% { opacity: 0.25; transform: scale(0.8); }
+    50%       { opacity: 0.9;  transform: scale(1.1); }
+  }
+
+  textarea::placeholder { color: rgba(255,255,255,0.20); }
+  input::placeholder    { color: rgba(255,255,255,0.20); }
+  * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+  ::-webkit-scrollbar       { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
+`;
