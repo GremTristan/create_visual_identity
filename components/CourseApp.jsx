@@ -607,125 +607,129 @@ export default function CourseApp() {
   // LANDING
   // ──────────────────────────────────────────────────────────────
   if (!mode) return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", fontFamily: "system-ui,-apple-system,sans-serif", position: "relative", overflow: "hidden" }}>
-      <LightLayer color="139,92,246" intensity={0.20} />
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", fontFamily: "system-ui,-apple-system,sans-serif", position: "relative", overflow: "hidden" }}>
+      <LightLayer color="139,92,246" intensity={0.24} />
       <NoiseOverlay />
 
-      <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: 460, display: "flex", flexDirection: "column", alignItems: "center" }}>
-
-        {/* Wordmark */}
-        <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 56, animation: "fadeUp 500ms both" }}>
-          <div style={{ width: 28, height: 28, borderRadius: 7, border: `1px solid ${C.borderHi}`, background: C.surface, display: "flex", alignItems: "center", justifyContent: "center", color: C.acc, backdropFilter: "blur(20px)" }}>
+      {/* ── Wordmark bar ── */}
+      <div style={{ position: "relative", zIndex: 1, padding: "28px 36px", display: "flex", alignItems: "center", justifyContent: "space-between", animation: "fadeUp 500ms both" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+          <div style={{ width: 26, height: 26, borderRadius: 6, border: `1px solid ${C.borderHi}`, background: C.surface, display: "flex", alignItems: "center", justifyContent: "center", color: C.acc, backdropFilter: "blur(20px)" }}>
             {I.layers}
           </div>
-          <span style={{ fontSize: 14, fontWeight: 600, color: C.textB, letterSpacing: "-0.02em" }}>Brand Studio</span>
-          <div style={{ height: 16, width: 1, background: C.border }} />
-          <span style={{ fontSize: 11, color: C.textMut, fontWeight: 500, letterSpacing: "0.02em" }}>v2.0</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: C.textSec, letterSpacing: "-0.02em" }}>Brand Studio</span>
         </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: C.textDim }}>
+          <div style={{ width: 5, height: 5, borderRadius: "50%", background: C.green, boxShadow: `0 0 5px ${C.green}` }} />
+          1 247 identités créées cette semaine
+        </div>
+      </div>
 
-        {/* Return state */}
-        {saved && (
-          <div
-            onClick={resume}
-            onMouseDown={press}
-            style={{ width: "100%", background: C.surface, border: `1px solid ${C.borderAccent}`, borderRadius: 10, padding: "13px 16px", marginBottom: 28, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", backdropFilter: "blur(20px)", transition: `all 180ms ${C.t1}`, animation: "fadeUp 400ms 60ms both" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = C.surfaceHi; e.currentTarget.style.borderColor = C.acc; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = C.surface; e.currentTarget.style.borderColor = C.borderAccent; }}
-          >
-            <div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.acc, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 3 }}>Session en cours</div>
-              <div style={{ fontSize: 13, fontWeight: 500, color: C.textB }}>
-                Reprendre avec {saved.brand || "ta marque"} · étape {(saved.step || 0) + 1}/{STEPS.length}
+      {/* ── Hero center ── */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 24px 80px", position: "relative", zIndex: 1 }}>
+        <div style={{ width: "100%", maxWidth: 560, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+
+          {/* Return state — minimal */}
+          {saved && (
+            <div
+              onClick={resume} onMouseDown={press}
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, background: C.surface, border: `1px solid ${C.borderAccent}`, borderRadius: 99, padding: "7px 14px 7px 10px", marginBottom: 48, cursor: "pointer", backdropFilter: "blur(20px)", transition: `all 180ms ${C.t1}`, animation: "wordReveal 500ms both" }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.acc; e.currentTarget.style.background = C.surfaceHi; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.borderAccent; e.currentTarget.style.background = C.surface; }}
+            >
+              <div style={{ width: 18, height: 18, borderRadius: "50%", background: C.accSoft, border: `1px solid ${C.borderAccent}`, display: "flex", alignItems: "center", justifyContent: "center", color: C.acc }}>
+                {I.chevRight}
               </div>
+              <span style={{ fontSize: 12, fontWeight: 500, color: C.textSec }}>
+                Reprendre avec <span style={{ color: C.textB }}>{saved.brand || "ta marque"}</span> · étape {(saved.step || 0) + 1}/{STEPS.length}
+              </span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ height: 3, width: 52, background: C.border, borderRadius: 99, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${((saved.done?.length || 0) / STEPS.length) * 100}%`, background: C.green, borderRadius: 99 }} />
-              </div>
-              <span style={{ color: C.textMut }}>{I.chevRight}</span>
-            </div>
-          </div>
-        )}
+          )}
 
-        {/* Headline */}
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: C.accSoft, border: `1px solid ${C.borderAccent}`, borderRadius: 99, padding: "4px 12px", marginBottom: 20, animation: "fadeUp 450ms both" }}>
-            <span style={{ color: C.acc }}>{I.spark}</span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: C.acc, letterSpacing: "0.02em" }}>Identité visuelle assistée par IA</span>
-          </div>
-
-          <h1 style={{ fontSize: "clamp(30px, 7vw, 44px)", fontWeight: 700, color: C.text, margin: "0 0 12px", letterSpacing: "-0.04em", lineHeight: 1.1, animation: "fadeUp 500ms 80ms both" }}>
-            Construis l'identité<br />
-            <span style={{ color: C.textSec }}>qui</span>{" "}
-            <span style={{ background: `linear-gradient(90deg, ${C.acc} 0%, ${C.blue} 100%)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>marque.</span>
+          {/* ── THE HEADLINE ── */}
+          <h1 style={{ margin: "0 0 28px", padding: 0, lineHeight: 1.04, letterSpacing: "-0.055em", fontSize: "clamp(44px, 10vw, 80px)", fontWeight: 300 }}>
+            {/* Line 1 — white, emerge from darkness */}
+            <span style={{ display: "block", color: C.text, animation: "wordReveal 800ms 100ms both" }}>
+              Construisez l'identité
+            </span>
+            {/* Line 2 — italic, slightly dimmed, offset timing */}
+            <span style={{ display: "block", fontStyle: "italic", color: C.textSec, animation: "wordReveal 900ms 340ms both" }}>
+              impossible à ignorer.
+            </span>
           </h1>
 
-          <p style={{ fontSize: 14, color: C.textSec, margin: 0, lineHeight: 1.7, maxWidth: 340, marginLeft: "auto", marginRight: "auto", animation: "fadeUp 500ms 160ms both" }}>
-            8 étapes structurées · Exemples de marques globales<br />Prompts IA prêts à l'emploi
+          {/* Subheadline */}
+          <p style={{ fontSize: 15, color: C.textMut, margin: "0 0 64px", lineHeight: 1.65, maxWidth: 360, fontWeight: 300, animation: "wordReveal 700ms 700ms both" }}>
+            Méthode en 8 étapes pour créer<br />
+            la marque que ton marché n'a pas encore vue.
           </p>
-        </div>
 
-        {/* Mode cards */}
-        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 8, animation: "fadeUp 500ms 220ms both" }}>
-          {[
-            { id: "create", label: "Créer ma marque",  sub: "Construis une identité visuelle de A à Z.",    tag: "Création",  gColor: C.acc,  tagBg: C.accSoft,  border: C.borderAccent },
-            { id: "setup",  label: "Étude de cas",      sub: "Analyse en profondeur une marque existante.", tag: "Analyse",   gColor: C.blue, tagBg: C.blueSoft, border: "rgba(96,165,250,0.30)" },
-          ].map((opt) => {
-            const dim = hovCard && hovCard !== opt.id;
-            return (
-              <div
-                key={opt.id}
-                onClick={() => setMode(opt.id)}
-                onMouseEnter={() => setHovCard(opt.id)}
-                onMouseLeave={() => setHovCard(null)}
-                onMouseDown={press}
-                style={{
-                  background: hovCard === opt.id ? C.surfaceHi : C.surface,
-                  border: `1px solid ${hovCard === opt.id ? opt.border : C.border}`,
-                  borderRadius: 12, padding: "16px 18px", cursor: "pointer",
-                  display: "flex", alignItems: "center", gap: 16,
-                  backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-                  transition: `all 180ms ${C.t1}`,
-                  opacity: dim ? 0.45 : 1,
-                  transform: hovCard === opt.id ? "translateY(-1px)" : "",
-                  boxShadow: hovCard === opt.id ? `0 0 0 1px ${opt.gColor}22, 0 8px 28px rgba(0,0,0,0.4)` : "none",
-                }}
-              >
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: opt.tagBg, border: `1px solid ${opt.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: opt.gColor }}>
-                  {I.layers}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
-                    <span style={{ fontSize: 14, fontWeight: 600, color: C.textB, letterSpacing: "-0.02em" }}>{opt.label}</span>
-                    <span style={{ fontSize: 10, fontWeight: 600, color: opt.gColor, background: opt.tagBg, border: `1px solid ${opt.border}`, borderRadius: 4, padding: "1px 7px", letterSpacing: "0.04em", textTransform: "uppercase" }}>{opt.tag}</span>
+          {/* ── Divider + mode rows ── */}
+          <div style={{ width: "100%", animation: "fadeUp 500ms 900ms both" }}>
+
+            {/* Top rule */}
+            <div style={{ height: 1, background: C.border, marginBottom: 0, transformOrigin: "left", animation: "lineGrow 600ms 800ms both" }} />
+
+            {[
+              { id: "create", label: "Créer mon identité visuelle",  sub: "Construire de zéro · 8 étapes guidées",  accent: C.acc  },
+              { id: "setup",  label: "Analyser une marque existante", sub: "Étude de cas · Décoder les choix créatifs", accent: C.blue },
+            ].map((opt, idx) => {
+              const isHov = hovCard === opt.id;
+              const isDim = hovCard && !isHov;
+              return (
+                <div
+                  key={opt.id}
+                  onClick={() => setMode(opt.id)}
+                  onMouseEnter={() => setHovCard(opt.id)}
+                  onMouseLeave={() => setHovCard(null)}
+                  onMouseDown={press}
+                  style={{
+                    borderBottom: `1px solid ${C.border}`,
+                    padding: "22px 4px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 16,
+                    transition: `all 200ms ${C.t1}`,
+                    opacity: isDim ? 0.32 : 1,
+                  }}
+                >
+                  <div style={{ textAlign: "left" }}>
+                    <div style={{ fontSize: 17, fontWeight: 400, color: isHov ? C.text : C.textB, letterSpacing: "-0.025em", transition: `color 180ms`, marginBottom: 4 }}>
+                      {opt.label}
+                    </div>
+                    <div style={{ fontSize: 12, color: isHov ? C.textSec : C.textMut, transition: `color 180ms`, letterSpacing: "0" }}>
+                      {opt.sub}
+                    </div>
                   </div>
-                  <p style={{ margin: 0, fontSize: 12, color: C.textMut, lineHeight: 1.5 }}>{opt.sub}</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0, color: isHov ? opt.accent : C.textDim, transform: isHov ? "translateX(3px)" : "translateX(0)", transition: `all 200ms ${C.t1}` }}>
+                    <span style={{ fontSize: 11, fontWeight: 500, opacity: isHov ? 1 : 0, transition: `opacity 180ms`, letterSpacing: "0.02em" }}>
+                      {idx === 0 ? "Créer" : "Analyser"}
+                    </span>
+                    {I.chevRight}
+                  </div>
                 </div>
-                <span style={{ color: C.textDim, flexShrink: 0 }}>{I.chevRight}</span>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
 
-        {/* Footer stats */}
-        <div style={{ marginTop: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, animation: "fadeUp 500ms 320ms both" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            {[["40+", "exemples réels"], ["8", "étapes guidées"], ["Free", "accès total"]].map(([n, l]) => (
-              <div key={l} style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: C.textB, letterSpacing: "-0.03em" }}>{n}</div>
-                <div style={{ fontSize: 10, color: C.textMut, marginTop: 2, letterSpacing: "0.01em" }}>{l}</div>
+          {/* Footer line */}
+          <div style={{ marginTop: 36, display: "flex", alignItems: "center", gap: 20, animation: "fadeUp 400ms 1100ms both" }}>
+            {[["40+", "exemples"], ["8", "étapes"], ["Free", ""]].map(([n, l]) => (
+              <div key={n} style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: C.textSec, letterSpacing: "-0.02em" }}>{n}</span>
+                {l && <span style={{ fontSize: 11, color: C.textDim }}>{l}</span>}
               </div>
             ))}
+            <div style={{ width: 1, height: 12, background: C.border }} />
+            {saved && (
+              <button onClick={(e) => { e.stopPropagation(); clearS(); setSaved(null); }} style={{ background: "none", border: "none", color: C.textDim, fontSize: 11, cursor: "pointer", fontFamily: "inherit" }}>
+                Repartir de zéro
+              </button>
+            )}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: C.textMut }}>
-            <div style={{ width: 5, height: 5, borderRadius: "50%", background: C.green, boxShadow: `0 0 6px ${C.green}` }} />
-            1 247 identités créées cette semaine
-          </div>
-          {saved && (
-            <button onClick={() => { clearS(); setSaved(null); }} style={{ background: "none", border: "none", color: C.textDim, fontSize: 11, cursor: "pointer", fontFamily: "inherit", marginTop: 4 }}>
-              Repartir de zéro
-            </button>
-          )}
+
         </div>
       </div>
 
@@ -1217,6 +1221,14 @@ const CSS_ANIMATIONS = `
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes wordReveal {
+    from { opacity: 0; filter: blur(12px); transform: translateY(10px); }
+    to   { opacity: 1; filter: blur(0px);  transform: translateY(0); }
+  }
+  @keyframes lineGrow {
+    from { transform: scaleX(0); transform-origin: left; opacity: 0; }
+    to   { transform: scaleX(1); transform-origin: left; opacity: 1; }
   }
   @keyframes scalePop {
     from { opacity: 0; transform: scale(0.5); }
