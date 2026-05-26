@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>Interface 1 – Bretagne Classique</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Arial, sans-serif; background:#1a1a1a; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+  .screen { width:1024px; height:768px; background:#f5f0e8; display:flex; flex-direction:column; border:3px solid #333; border-radius:4px; overflow:hidden; box-shadow:0 0 40px rgba(0,0,0,0.8); }
+
+  /* Header */
+  .header { background:linear-gradient(135deg, #2c1810 0%, #5c3317 50%, #2c1810 100%); color:#f5c842; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #8b4513; }
+  .header .logo { display:flex; align-items:center; gap:12px; }
+  .header .logo .emblem { width:48px; height:48px; background:#f5c842; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; }
+  .header .title { font-size:22px; font-weight:bold; letter-spacing:2px; text-shadow:1px 1px 3px rgba(0,0,0,0.5); }
+  .header .subtitle { font-size:11px; letter-spacing:3px; color:#d4a843; margin-top:2px; }
+  .header .datetime { text-align:right; font-size:13px; color:#d4a843; }
+  .header .datetime .time { font-size:26px; font-weight:bold; color:#f5c842; }
+
+  /* Body */
+  .body { display:flex; flex:1; overflow:hidden; }
+
+  /* Left sidebar – categories */
+  .sidebar { width:160px; background:linear-gradient(180deg, #3d2b1f 0%, #2c1810 100%); display:flex; flex-direction:column; gap:2px; padding:6px; border-right:3px solid #8b4513; }
+  .cat-btn { padding:0; height:80px; border-radius:6px; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; font-size:12px; font-weight:bold; letter-spacing:0.5px; transition:all .15s; position:relative; overflow:hidden; }
+  .cat-btn:active, .cat-btn.active { filter:brightness(1.2); transform:scale(0.97); }
+  .cat-btn .icon { font-size:22px; }
+  .cat-btn.galettes { background:linear-gradient(135deg, #5d4e37, #8b7355); color:#fff3d4; border:2px solid #c8a96e; }
+  .cat-btn.sucrees { background:linear-gradient(135deg, #c0392b, #e74c3c); color:#fff; border:2px solid #f1948a; }
+  .cat-btn.formules { background:linear-gradient(135deg, #27ae60, #2ecc71); color:#fff; border:2px solid #82e0aa; }
+  .cat-btn.boissons { background:linear-gradient(135deg, #2980b9, #3498db); color:#fff; border:2px solid #85c1e9; }
+  .cat-btn.desserts { background:linear-gradient(135deg, #8e44ad, #9b59b6); color:#fff; border:2px solid #c39bd3; }
+  .cat-btn.enfants { background:linear-gradient(135deg, #e67e22, #f39c12); color:#fff; border:2px solid #f8c471; }
+  .cat-badge { position:absolute; top:4px; right:4px; background:rgba(255,255,255,0.25); border-radius:8px; font-size:9px; padding:1px 5px; }
+
+  /* Main grid */
+  .main { flex:1; display:flex; flex-direction:column; background:#e8dfd0; }
+  .cat-title { background:linear-gradient(90deg, #8b4513, #c8a96e); color:#fff; padding:8px 16px; font-size:14px; font-weight:bold; letter-spacing:2px; display:flex; align-items:center; gap:8px; }
+  .cat-title .dot { width:8px; height:8px; border-radius:50%; background:#f5c842; }
+  .items-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; padding:8px; flex:1; overflow-y:auto; align-content:start; }
+  .item-btn { padding:8px 6px; border-radius:8px; border:2px solid; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-height:72px; transition:all .15s; text-align:center; }
+  .item-btn:active { transform:scale(0.95); filter:brightness(0.9); }
+  .item-btn .name { font-size:12px; font-weight:bold; line-height:1.2; }
+  .item-btn .price { font-size:13px; font-weight:bold; margin-top:2px; }
+  .item-btn .badge { font-size:9px; background:rgba(0,0,0,0.15); border-radius:10px; padding:1px 6px; }
+
+  /* Galettes colors */
+  .galette-std { background:linear-gradient(135deg, #f5e6c8, #ead5a8); border-color:#c8a96e; color:#3d2b1f; }
+  .galette-spec { background:linear-gradient(135deg, #d4a843, #e8c060); border-color:#b8942a; color:#2c1810; }
+  .galette-vege { background:linear-gradient(135deg, #a8d5a2, #85c17e); border-color:#5a9e53; color:#1a3a18; }
+
+  /* Right panel */
+  .right-panel { width:220px; background:#2c1810; display:flex; flex-direction:column; border-left:3px solid #8b4513; }
+  .order-header { background:linear-gradient(135deg, #5c3317, #8b4513); color:#f5c842; padding:10px; font-size:13px; font-weight:bold; letter-spacing:1px; text-align:center; border-bottom:2px solid #c8a96e; }
+  .order-list { flex:1; padding:6px; overflow-y:auto; }
+  .order-item { background:rgba(255,255,255,0.08); border-radius:5px; padding:8px; margin-bottom:4px; color:#f5e6c8; display:flex; justify-content:space-between; align-items:center; border-left:3px solid #c8a96e; }
+  .order-item .iname { font-size:11px; font-weight:bold; flex:1; }
+  .order-item .iprice { font-size:12px; color:#f5c842; font-weight:bold; }
+  .order-item .qty { background:#8b4513; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#fff; margin-left:4px; }
+  .order-divider { border:none; border-top:1px dashed rgba(200,169,110,0.3); margin:4px 0; }
+  .order-total { padding:10px; border-top:2px solid #8b4513; }
+  .total-row { display:flex; justify-content:space-between; color:#d4a843; font-size:12px; margin-bottom:4px; }
+  .total-amount { display:flex; justify-content:space-between; color:#f5c842; font-size:20px; font-weight:bold; padding:6px 0; border-top:1px solid #8b4513; }
+  .action-btns { display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:6px; border-top:2px solid #5c3317; }
+  .action-btn { padding:10px 4px; border-radius:6px; border:none; cursor:pointer; font-size:11px; font-weight:bold; letter-spacing:0.5px; transition:all .15s; }
+  .action-btn:active { transform:scale(0.96); }
+  .btn-cancel { background:linear-gradient(135deg, #7f1d1d, #b91c1c); color:#fff; }
+  .btn-note { background:linear-gradient(135deg, #374151, #4b5563); color:#fff; }
+  .btn-table { background:linear-gradient(135deg, #1e40af, #2563eb); color:#fff; }
+  .btn-pay { background:linear-gradient(135deg, #166534, #16a34a); color:#fff; font-size:13px; padding:14px 4px; }
+  .btn-pay-full { grid-column: span 2; background:linear-gradient(135deg, #166534, #16a34a); color:#fff; font-size:14px; font-weight:bold; padding:14px; border-radius:6px; border:none; cursor:pointer; letter-spacing:1px; }
+
+  /* Bottom nav */
+  .bottom-nav { height:52px; background:linear-gradient(90deg, #2c1810, #5c3317, #2c1810); display:flex; align-items:center; gap:2px; padding:4px 6px; border-top:3px solid #8b4513; }
+  .nav-btn { flex:1; height:44px; border-radius:5px; border:1px solid rgba(200,169,110,0.3); background:rgba(255,255,255,0.05); color:#d4a843; font-size:10px; font-weight:bold; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; transition:all .15s; }
+  .nav-btn .nicon { font-size:16px; }
+  .nav-btn:hover { background:rgba(200,169,110,0.15); color:#f5c842; }
+  .nav-btn.active { background:linear-gradient(135deg, #8b4513, #c8a96e); color:#fff; border-color:#f5c842; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-track { background:rgba(0,0,0,0.1); }
+  ::-webkit-scrollbar-thumb { background:#8b4513; border-radius:3px; }
+</style>
+</head>
+<body>
+<div class="screen">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">
+      <div class="emblem">🥞</div>
+      <div>
+        <div class="title">CRÊPERIE DU MOLARD</div>
+        <div class="subtitle">SPÉCIALITÉS BRETONNES DEPUIS 1987</div>
+      </div>
+    </div>
+    <div class="datetime">
+      <div class="time">12:34</div>
+      <div>Lun. 26 Mai 2026</div>
+      <div style="margin-top:2px; font-size:11px; color:#8b6530;">Table N°7 — Serveur: Marie</div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- SIDEBAR CATEGORIES -->
+    <div class="sidebar">
+      <button class="cat-btn galettes active">
+        <span class="icon">🌾</span>
+        <span>GALETTES</span>
+        <span>SALÉES</span>
+        <span class="cat-badge">12</span>
+      </button>
+      <button class="cat-btn sucrees">
+        <span class="icon">🍓</span>
+        <span>CRÊPES</span>
+        <span>SUCRÉES</span>
+        <span class="cat-badge">18</span>
+      </button>
+      <button class="cat-btn formules">
+        <span class="icon">🍽️</span>
+        <span>FORMULES</span>
+        <span class="cat-badge">4</span>
+      </button>
+      <button class="cat-btn boissons">
+        <span class="icon">🍺</span>
+        <span>BOISSONS</span>
+        <span class="cat-badge">15</span>
+      </button>
+      <button class="cat-btn desserts">
+        <span class="icon">🍨</span>
+        <span>GLACES &</span>
+        <span>DESSERTS</span>
+        <span class="cat-badge">8</span>
+      </button>
+      <button class="cat-btn enfants">
+        <span class="icon">⭐</span>
+        <span>MENU</span>
+        <span>ENFANT</span>
+        <span class="cat-badge">3</span>
+      </button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+      <div class="cat-title">
+        <div class="dot"></div>
+        🌾 GALETTES SARRASIN — Farine de blé noir 100% Bretagne
+      </div>
+      <div class="items-grid">
+
+        <button class="item-btn galette-std">
+          <span style="font-size:18px">🧀</span>
+          <span class="name">COMPLÈTE</span>
+          <span class="badge">Jambon · Œuf · Emmental</span>
+          <span class="price">12,50 €</span>
+        </button>
+
+        <button class="item-btn galette-spec">
+          <span style="font-size:18px">🐟</span>
+          <span class="name">BRETONNE</span>
+          <span class="badge">Saumon fumé · Crème</span>
+          <span class="price">15,90 €</span>
+        </button>
+
+        <button class="item-btn galette-vege">
+          <span style="font-size:18px">🥦</span>
+          <span class="name">VÉGÉTARIENNE</span>
+          <span class="badge">Chèvre · Épinards</span>
+          <span class="price">13,50 €</span>
+        </button>
+
+        <button class="item-btn galette-std">
+          <span style="font-size:18px">🥚</span>
+          <span class="name">BEURRE ŒUF</span>
+          <span class="badge">Classique breton</span>
+          <span class="price">9,00 €</span>
+        </button>
+
+        <button class="item-btn galette-spec">
+          <span style="font-size:18px">🦐</span>
+          <span class="name">FRUITS DE MER</span>
+          <span class="badge">Crevettes · St-Jacques</span>
+          <span class="price">17,50 €</span>
+        </button>
+
+        <button class="item-btn galette-std">
+          <span style="font-size:18px">🥓</span>
+          <span class="name">LARDONS</span>
+          <span class="badge">Lardons · Crème · Œuf</span>
+          <span class="price">13,00 €</span>
+        </button>
+
+        <button class="item-btn galette-vege">
+          <span style="font-size:18px">🍄</span>
+          <span class="name">FORESTIÈRE</span>
+          <span class="badge">Champignons · Crème</span>
+          <span class="price">12,00 €</span>
+        </button>
+
+        <button class="item-btn galette-spec">
+          <span style="font-size:18px">🫒</span>
+          <span class="name">ANDOUILLE</span>
+          <span class="badge">Andouille de Guémené</span>
+          <span class="price">14,00 €</span>
+        </button>
+
+        <button class="item-btn galette-std">
+          <span style="font-size:18px">🧅</span>
+          <span class="name">SAVOYARDE</span>
+          <span class="badge">Reblochon · Pommes de terre</span>
+          <span class="price">14,50 €</span>
+        </button>
+
+        <button class="item-btn galette-vege">
+          <span style="font-size:18px">🥗</span>
+          <span class="name">SARASIN NATURE</span>
+          <span class="badge">Beurre breton AOC</span>
+          <span class="price">7,00 €</span>
+        </button>
+
+        <button class="item-btn galette-spec" style="background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#d97706;color:#7c2d12;">
+          <span style="font-size:18px">👨‍🍳</span>
+          <span class="name">SPÉCIALE CHEF</span>
+          <span class="badge">Création du jour</span>
+          <span class="price">16,00 €</span>
+        </button>
+
+        <button class="item-btn galette-std" style="border-style:dashed; opacity:0.6;">
+          <span style="font-size:18px">✏️</span>
+          <span class="name">GARNITURE</span>
+          <span class="name">LIBRE</span>
+          <span class="price">à définir</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL ORDER -->
+    <div class="right-panel">
+      <div class="order-header">📋 COMMANDE EN COURS</div>
+      <div class="order-list">
+        <div class="order-item">
+          <div>
+            <div class="iname">COMPLÈTE</div>
+            <div style="font-size:9px;color:#8b6530;">Jambon · Œuf · Emmental</div>
+          </div>
+          <div class="iprice">12,50€</div>
+          <div class="qty">1</div>
+        </div>
+        <div class="order-item">
+          <div>
+            <div class="iname">BRETONNE</div>
+            <div style="font-size:9px;color:#8b6530;">Saumon · Crème</div>
+          </div>
+          <div class="iprice">15,90€</div>
+          <div class="qty">1</div>
+        </div>
+        <div class="order-item">
+          <div>
+            <div class="iname">CIDRE BRUT 50cl</div>
+            <div style="font-size:9px;color:#8b6530;">Cidre artisanal</div>
+          </div>
+          <div class="iprice">5,50€</div>
+          <div class="qty">2</div>
+        </div>
+        <hr class="order-divider">
+        <div class="order-item" style="border-left-color:#e74c3c;">
+          <div>
+            <div class="iname">SUZETTE</div>
+            <div style="font-size:9px;color:#8b6530;">Grand Marnier flambée</div>
+          </div>
+          <div class="iprice">9,90€</div>
+          <div class="qty">1</div>
+        </div>
+      </div>
+      <div class="order-total">
+        <div class="total-row"><span>Sous-total</span><span>43,80€</span></div>
+        <div class="total-row"><span>TVA 10%</span><span>3,98€</span></div>
+        <div class="total-amount"><span>TOTAL</span><span>43,80€</span></div>
+      </div>
+      <div class="action-btns">
+        <button class="action-btn btn-cancel">🗑 Annuler</button>
+        <button class="action-btn btn-note">📝 Note</button>
+        <button class="action-btn btn-table">🔄 Table</button>
+        <button class="action-btn btn-pay">💳 Encaisser</button>
+        <button class="action-btn btn-pay-full">✅ VALIDER COMMANDE</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-btn active">
+      <span class="nicon">🏠</span>
+      <span>ACCUEIL</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nicon">📋</span>
+      <span>TABLES</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nicon">🗺️</span>
+      <span>PLAN SALLE</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nicon">📊</span>
+      <span>STATS JOUR</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nicon">🔧</span>
+      <span>OPTIONS</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nicon">⏸️</span>
+      <span>PRÉ-NOTE</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nicon">➡️</span>
+      <span>SUIVANT</span>
+    </button>
+  </div>
+
+</div>
+</body>
+</html>
